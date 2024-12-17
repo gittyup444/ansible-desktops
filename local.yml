@@ -4,6 +4,9 @@
   become: true # used to enable sudo
 
   tasks:
-  - name: install htop
-    package: # ansible module to use
-      name: htop
+  - name: install packages
+    package: # ansible module to use for this task
+      name: 
+        - htop
+        - tmux
+        - curl
