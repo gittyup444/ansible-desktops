@@ -1,0 +1,9 @@
+---
+- hosts: localhost # using ansible-pull so will run locally on the machine that calls this
+  connection: local # using ansible-pull so will run locally on the machine that calls this and pulls from github, could be SSH
+  become: true # used to enable sudo
+
+  tasks:
+  - name: install htop
+    package: # ansible module to use
+      name: htop
