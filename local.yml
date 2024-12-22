@@ -15,7 +15,7 @@
       name: 
         # utilities
         - baobab
-        - balena-etcher
+#        - balena-etcher
         - bleachbit
         - curl
         - freefilesync
