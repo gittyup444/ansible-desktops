@@ -26,28 +26,26 @@
     package: # ansible module to use for this task
       name: 
         # utilities
-        - baobab
-#        - balena-etcher
-        - bleachbit
+        - baobab # disk usage analyser
+#        - balena-etcher # not in a repo
+        - bleachbit # cleaning utility
         - curl
         - freefilesync
-        - gnome-disk-utility
+        - gnome-disk-utility # disks
         - gparted
         - grsync
-        - hardinfo
+        - hardinfo # gui hardware overview
         - htop
         - keepassxc
         - nextcloud-desktop
         - openssh-server
-        - remmina
+        - remmina # remote desktop client
         - sublime-text
-        - tlp
-        - tmux
+        - tlp # battery optimisation
+        - tmux # advanced terminal
         # media
-        - drawing
-        - calibre
-        - kolourpaint
-#        - pinta
+        - drawing # paint clone
+        - calibre # ebook manager
         - puddletag
         - rhythmbox
         - vlc
@@ -55,7 +53,7 @@
   - name: install snap packages
     community.general.snap: 
       name: 
-        pinta
+        pinta # paint.net clone
 
   - name: copy wallpaper file
     copy: 

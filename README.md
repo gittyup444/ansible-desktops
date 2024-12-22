@@ -24,5 +24,4 @@ git
 syncthing  
 keepassxc  
 ssh identities  
-
-TESTTEST
+balena-etcher
