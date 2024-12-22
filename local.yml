@@ -22,7 +22,7 @@
       filename: sublime-text
       update_cache: yes
 
-  - name: install packages
+  - name: install apt packages
     package: # ansible module to use for this task
       name: 
         # utilities
@@ -51,6 +51,11 @@
         - puddletag
         - rhythmbox
         - vlc
+
+  - name: install snap packages
+    community.general.snap: 
+      name: 
+        pinta
 
   - name: copy wallpaper file
     copy: 
