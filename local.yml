@@ -4,12 +4,41 @@
   become: true # used to enable sudo
 
   tasks:
+  - name: Update and upgrade apt packages
+    apt:
+      upgrade: yes
+      update_cache: yes
+      cache_valid_time: 86400
+
   - name: install packages
     package: # ansible module to use for this task
       name: 
-        - htop
-        - tmux
+        # utilities
+        - baobab
+        - balena-etcher
+        - bleachbit
         - curl
+        - freefilesync
+        - gnome-disk-utility
+        - gparted
+        - grsync
+        - hardinfo
+        - htop
+        - keepassxc
+        - nextcloud-client
+        - openssh-server
+        - remmina
+        - tlp
+        - tmux
+        # media
+        - drawing
+        - calibre
+        - kolourpaint
+        - pinta
+        - puddletag
+        - rhythmbox
+        - vlc
+
   - name: copy wallpaper file
     copy: 
       src: files/wallpaper.png
