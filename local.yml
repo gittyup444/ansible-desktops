@@ -41,11 +41,11 @@
 
   - name: copy wallpaper file
     copy: 
-      src: files/wallpaper.png
-      dest: /usr/share/backgrounds/ansible-wallpaper.png
+      src: files/wallpapers/spectrum_curves.jpg
+      dest: /usr/share/backgrounds/ansible-wallpaper.jpg
       owner: root
       group: root
 
-  - name: set wallpaper
-    dconf: # ansible module to use for this task
-      key: # 44:44 in this video https://www.youtube.com/watch?v=gIDywsGBqf4
+#  - name: set wallpaper
+#    dconf: # ansible module to use for this task
+#      key: # 44:44 in this video https://www.youtube.com/watch?v=gIDywsGBqf4
