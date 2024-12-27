@@ -6,13 +6,13 @@
 # list of config file paths
   vars:
     files_to_copy:
-      - src: files/configs/config/bleachbit
-        dest: /home/jack/.config/bleachbit
+      - src: files/configs/config/bleachbit/bleachbit.ini
+        dest: /home/jack/.config/bleachbit/bleachbit.ini
         owner: jack
         group: jack
         mode: "0664"
-      - src: files/configs/config/vlc
-        dest: /home/jack/.config/vlc
+      - src: files/configs/config/vlc/vlcrc
+        dest: /home/jack/.config/vlc/vlcrc
         owner: jack
         group: jack
         mode: "0600"
