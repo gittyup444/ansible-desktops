@@ -78,13 +78,13 @@
       group: "{{ item.group }}"
       mode: "{{ item.mode }}"
     loop:
-      - src: files/configs/config/bleachbit/bleachbit.ini
-        dest: /home/jack/.config/bleachbit/bleachbit.ini
+      - src: files/configs/config/bleachbit
+        dest: /home/jack/.config/bleachbit
         owner: jack
         group: jack
         mode: 664
-      - src: files/configs/config/vlc/vlcrc
-        dest: /home/jack/.config/vlc/vlcrc
+      - src: files/configs/config/vlc
+        dest: /home/jack/.config/vlc
         owner: jack
         group: jack
         mode: 600
