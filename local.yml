@@ -70,6 +70,29 @@
       group: root
 
 #### CONFIG FILES ####
+
+  - vars:
+      files_to_copy:
+        - src: files/configs/config/bleachbit
+          dest: /home/jack/.config/
+          owner: jack
+          group: jack
+          mode: 664
+        - src: files/configs/config/vlc
+          dest: /home/jack/.config/
+          owner: jack
+          group: jack
+          mode: 600
+
+  - name: ensure destination directories exist and set permissions
+    file:
+      path: "{{ item.dest | dirname }}"
+      state: directory
+      owner: "{{ item.owner }}"
+      group: "{{ item.group }}"
+      mode: "{{ item.mode }}"
+    loop: "{{ files_to_copy }}"
+
   - name: copy config files
     copy: 
       src: "{{ item.src }}" 
@@ -77,17 +100,8 @@
       owner: "{{ item.owner }}"
       group: "{{ item.group }}"
       mode: "{{ item.mode }}"
-    loop:
-      - src: files/configs/config/bleachbit
-        dest: /home/jack/.config/
-        owner: jack
-        group: jack
-        mode: 664
-      - src: files/configs/config/vlc
-        dest: /home/jack/.config/
-        owner: jack
-        group: jack
-        mode: 600
+    loop: "{{ files_to_copy }}"
+
 
 #  - name: set wallpaper
 #    dconf: # ansible module to use for this task
