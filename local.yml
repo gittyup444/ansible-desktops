@@ -95,6 +95,14 @@
       loop_control:
         label: "{{ item.dest }}"
 
+    #### DEBUG: Print File Paths ####
+    - name: Debug file paths
+      debug:
+        msg: "Copying {{ item.src }} to {{ item.dest }}"
+      loop: "{{ files_to_copy }}"
+      loop_control:
+        label: "{{ item.src }}"
+
     - name: Copy config files
       copy:
         src: "{{ item.src }}"
