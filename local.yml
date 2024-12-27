@@ -4,6 +4,9 @@
   become: true # used to enable sudo
 
   tasks:
+
+#### APPLICATIONS ####
+
   - name: Update and upgrade apt packages
     apt:
       upgrade: yes
@@ -57,12 +60,34 @@
       name: 
         pinta # paint.net clone
 
+#### OS SETTINGS ####
+
   - name: copy wallpaper file
     copy: 
       src: files/wallpapers/spectrum_curves.jpg
       dest: /usr/share/backgrounds/ansible-wallpaper.jpg
       owner: root
       group: root
+
+#### CONFIG FILES ####
+  - name: copy config files
+    copy: 
+      src: "{{ item.src }}" 
+      dest: "{{ item.dest }}"
+      owner: "{{ item.owner }}"
+      group: "{{ item.group }}"
+      mode: "{{ item.mode }}"
+    loop:
+      - src: files/configs/config/bleachbit/bleachbit.ini
+        dest: /home/jack/.config/bleachbit/bleachbit.ini
+        owner: jack
+        group: jack
+        mode: 664
+      - src: files/configs/config/vlc/vlcrc
+        dest: /home/jack/.config/vlc/vlcrc
+        owner: jack
+        group: jack
+        mode: 600
 
 #  - name: set wallpaper
 #    dconf: # ansible module to use for this task
