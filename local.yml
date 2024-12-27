@@ -31,6 +31,7 @@
         - bleachbit # cleaning utility
         - curl
         - freefilesync
+        - gdebi-core # required dependency for installing .deb files, likely already satisfied by default
         - gnome-disk-utility # disks
         - gparted
         - grsync
@@ -49,6 +50,7 @@
         - puddletag
         - rhythmbox
         - vlc
+      state: present
 
   - name: install snap packages
     community.general.snap: 
