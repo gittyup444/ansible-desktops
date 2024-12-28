@@ -46,7 +46,7 @@
 
     - name: Add vs-codium apt repo
       apt_repository:
-        repo: deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https://download.vscodium.com/debs vscodium main
+        repo: "deb [signed-by=/usr/share/keyrings/vscodium.gpg] https://packages.vscodium.com/debs/ stable main"
         state: present
         filename: vscodium
         update_cache: yes
