@@ -48,7 +48,7 @@
       apt_repository:
         repo: "deb [signed-by=/usr/share/keyrings/vscodium.gpg] https://packages.vscodium.com/debs/ stable main"
         state: present
-        filename: vscodium
+        filename: codium
         update_cache: yes
 
     - name: install apt packages
