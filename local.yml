@@ -39,10 +39,14 @@
         filename: sublime-text
         update_cache: yes
 
-    - name: Download and add VSCodium GPG key
+    - name: Download VSCodium GPG key
+      ansible.builtin.get_url:
+        url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+        dest: /tmp/vscodium.gpg
+
+    - name: Convert VSCodium GPG key to keyring format
       ansible.builtin.command:
-        cmd: |
-          wget -qO- https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | gpg --dearmor -o /usr/share/keyrings/vscodium-archive-keyring.gpg
+        cmd: gpg --dearmor -o /usr/share/keyrings/vscodium-archive-keyring.gpg /tmp/vscodium.gpg
       args:
         creates: /usr/share/keyrings/vscodium-archive-keyring.gpg
 
