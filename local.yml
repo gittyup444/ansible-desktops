@@ -46,11 +46,11 @@
       args:
         creates: /usr/share/keyrings/vscodium-archive-keyring.gpg
 
-    - name: Add vs-codium apt repo
-      apt_repository:
-        repo: 'deb [signed-by=/usr/share/keyrings/vscodium.gpg] https://packages.vscodium.com/debs/ stable main'
+    - name: Add VSCodium repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs/ vscodium main"
         state: present
-        filename: codium
+        filename: vscodium
         update_cache: yes
 
     - name: install apt packages
