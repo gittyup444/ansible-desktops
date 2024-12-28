@@ -39,14 +39,16 @@
         filename: sublime-text
         update_cache: yes
 
-    - name: Add vs-codium apt-key
-      apt_key:
-        url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
-        state: present
+    - name: Download and add VSCodium GPG key
+      ansible.builtin.command:
+        cmd: |
+          wget -qO- https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | gpg --dearmor -o /usr/share/keyrings/vscodium-archive-keyring.gpg
+      args:
+        creates: /usr/share/keyrings/vscodium-archive-keyring.gpg
 
     - name: Add vs-codium apt repo
       apt_repository:
-        repo: "deb [signed-by=/usr/share/keyrings/vscodium.gpg] https://packages.vscodium.com/debs/ stable main"
+        repo: 'deb [signed-by=/usr/share/keyrings/vscodium.gpg] https://packages.vscodium.com/debs/ stable main'
         state: present
         filename: codium
         update_cache: yes
