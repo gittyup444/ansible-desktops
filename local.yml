@@ -165,6 +165,7 @@
           - puddletag
           - rhythmbox
           - vlc
+          - yt-dlp
         state: present
 
     - name: Install snap packages
