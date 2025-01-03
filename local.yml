@@ -118,7 +118,7 @@
       ansible.builtin.set_fact:
         veracrypt_deb_url: >
           {{ 
-            (veracrypt_download_page.content | regex_findall('https://.*?veracrypt-[0-9._]+-Ubuntu-24.04.*amd64.deb') | first) | url_decode
+            (veracrypt_download_page.content | regex_findall('https://.*?veracrypt-[0-9._]+-Ubuntu-24.04.*amd64.deb') | first)  | replace('&#43;', '+')
           }}
 
     - name: Download the VeraCrypt .deb file
