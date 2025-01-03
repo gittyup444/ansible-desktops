@@ -32,11 +32,6 @@
         url: https://download.sublimetext.com/sublimehq-pub.gpg
         state: present
 
-    - name: Add brave browser GPG key
-      apt_key:
-        url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-        state: present
-
     - name: Download Signal messenger key
       ansible.builtin.get_url:
         url: https://updates.signal.org/desktop/apt/keys.asc
@@ -47,6 +42,17 @@
         cmd: gpg --dearmor -o /usr/share/keyrings/signal-desktop-keyring.gpg /tmp/signal.asc
       args:
         creates: /usr/share/keyrings/signal-desktop-keyring.gpg
+
+    - name: Download brave-browser GPG key
+      ansible.builtin.get_url:
+        url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+        dest: /tmp/brave.gpg
+
+    - name: Convert brave-browser GPG key to keyring format
+      ansible.builtin.command:
+        cmd: gpg --dearmor -o /usr/share/keyrings/brave-browser-archive-keyring.gpg /tmp/brave.gpg
+      args:
+        creates: /usr/share/keyrings/brave-browser-archive-keyring.gpg
 
     - name: Download VSCodium GPG key
       ansible.builtin.get_url:
