@@ -80,6 +80,61 @@
           filename: signal
           update_cache: true
 
+    - name: Fetch the latest Balena Etcher release URL
+      uri:
+        url: https://api.github.com/repos/balena-io/etcher/releases/latest
+        return_content: yes
+      register: etcher_release
+
+    - name: Extract the download URL for the .deb package
+      set_fact:
+        etcher_deb_url: "{{ etcher_release.json.assets | selectattr('browser_download_url', 'search', 'amd64.deb$') | map(attribute='browser_download_url') | first }}"
+
+    - name: Download the latest Balena Etcher .deb package
+      get_url:
+        url: "{{ etcher_deb_url }}"
+        dest: /tmp/balena-etcher-electron.deb
+
+    - name: Install Balena Etcher
+      command: gdebi --non-interactive /tmp/balena-etcher-electron.deb
+
+    - name: Clean up the .deb package
+      file:
+        path: /tmp/balena-etcher-electron.deb
+        state: absent
+
+    - name: Ensure required dependencies for .deb files are installed
+      ansible.builtin.apt:
+        name: gdebi-core
+        state: present
+
+    - name: Get the latest VeraCrypt download URL
+      ansible.builtin.uri:
+        url: "https://www.veracrypt.fr/en/Downloads.html"
+        return_content: yes
+      register: veracrypt_download_page
+
+    - name: Extract VeraCrypt .deb file URL for Ubuntu 24.04
+      ansible.builtin.set_fact:
+        veracrypt_deb_url: >
+          {{ 
+            (veracrypt_download_page.content | regex_findall('https://.*?VeraCrypt_.*_Ubuntu_24.04-1_amd64.deb') | first)
+          }}
+
+    - name: Download the VeraCrypt .deb file
+      ansible.builtin.get_url:
+        url: "{{ veracrypt_deb_url }}"
+        dest: /tmp/veracrypt.deb
+
+    - name: Install VeraCrypt from .deb file
+      ansible.builtin.command:
+        cmd: "gdebi -n /tmp/veracrypt.deb"
+
+    - name: Clean up downloaded .deb file
+      ansible.builtin.file:
+        path: /tmp/veracrypt.deb
+        state: absent
+
     - name: install all apt packages
       package: # ansible module to use for this task
         name: 
