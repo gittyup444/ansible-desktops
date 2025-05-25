@@ -27,6 +27,11 @@
         update_cache: yes
         cache_valid_time: 86400
 
+    - name: Ensure required dependencies for .deb files are installed
+      ansible.builtin.apt:
+        name: gdebi-core
+        state: present
+
     - name: Fetch the latest Balena Etcher release URL
       uri:
         url: https://api.github.com/repos/balena-io/etcher/releases/latest
@@ -49,11 +54,6 @@
       file:
         path: /tmp/balena-etcher-electron.deb
         state: absent
-
-    - name: Ensure required dependencies for .deb files are installed
-      ansible.builtin.apt:
-        name: gdebi-core
-        state: present
 
     - name: Get the latest VeraCrypt download URL
       ansible.builtin.uri:
