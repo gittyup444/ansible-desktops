@@ -88,7 +88,7 @@
           # utilities
           - baobab # disk usage analyser
           - bleachbit # cleaning utility
-          - brave-browser
+          #- brave-browser # not available in all repos
           - chromium-browser
           #- cobang # repo added above
           #- codium # repo added above
