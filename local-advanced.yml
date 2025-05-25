@@ -27,13 +27,82 @@
         update_cache: yes
         cache_valid_time: 86400
 
+    - name: Add sublime-text GPG key
+      apt_key:
+        url: https://download.sublimetext.com/sublimehq-pub.gpg
+        state: present
+
+    - name: Download Signal messenger key
+      ansible.builtin.get_url:
+        url: https://updates.signal.org/desktop/apt/keys.asc
+        dest: /tmp/signal.asc
+
+    - name: Convert Signal messenger key to keyring format
+      ansible.builtin.command:
+        cmd: gpg --dearmor -o /usr/share/keyrings/signal-desktop-keyring.gpg /tmp/signal.asc
+      args:
+        creates: /usr/share/keyrings/signal-desktop-keyring.gpg
+
+    - name: Download brave-browser GPG key
+      ansible.builtin.get_url:
+        url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+        dest: /tmp/brave.gpg
+
+    - name: Convert brave-browser GPG key to keyring format
+      ansible.builtin.command:
+        cmd: gpg --dearmor -o /usr/share/keyrings/brave-browser-archive-keyring.gpg /tmp/brave.gpg
+      args:
+        creates: /usr/share/keyrings/brave-browser-archive-keyring.gpg
+
+    - name: Download VSCodium GPG key
+      ansible.builtin.get_url:
+        url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+        dest: /tmp/vscodium.gpg
+
+    - name: Convert VSCodium GPG key to keyring format
+      ansible.builtin.command:
+        cmd: gpg --dearmor -o /usr/share/keyrings/vscodium-archive-keyring.gpg /tmp/vscodium.gpg
+      args:
+        creates: /usr/share/keyrings/vscodium-archive-keyring.gpg
+
+    - name: Add multiple custom repositories
+      ansible.builtin.apt_repository:
+        repo: "{{ item.repo }}"
+        state: present
+        filename: "{{ item.filename | default(omit) }}"
+        update_cache: "{{ item.update_cache | default(false) }}"
+      loop:
+        # Sublime text
+        - repo: deb https://download.sublimetext.com/ apt/stable/
+          state: present
+          filename: sublime-text
+          update_cache: yes
+        # vs codium
+        - repo: "deb [signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs/ vscodium main"
+          state: present
+          filename: vscodium
+          update_cache: yes
+        # CoBang QR scanner
+        - repo: "ppa:ng-hong-quan/ppa"
+          update_cache: true
+        # Signal
+        - repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main"
+          state: present
+          filename: signal
+          update_cache: true
+        # Brave
+        - repo: "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"
+          state: present
+          filename: brave
+          update_cache: true
+
     - name: Fetch the latest Balena Etcher release URL
       uri:
         url: https://api.github.com/repos/balena-io/etcher/releases/latest
         return_content: yes
       register: etcher_release
 
-    - name: Extract the download URL for the Balena Etcher .deb package
+    - name: Extract the download URL for the .deb package
       set_fact:
         etcher_deb_url: "{{ etcher_release.json.assets | selectattr('browser_download_url', 'search', 'amd64.deb$') | map(attribute='browser_download_url') | first }}"
 
@@ -90,8 +159,8 @@
           - bleachbit # cleaning utility
           - brave-browser
           - chromium-browser
-          #- cobang # repo added above
-          #- codium # repo added above
+          - cobang # repo added above
+          - codium # repo added above
           - curl
           - freefilesync
           - gdebi-core # required dependency for installing .deb files, likely already satisfied by default
@@ -104,8 +173,8 @@
           - nextcloud-desktop
           - openssh-server
           - remmina # remote desktop client
-          #- signal-desktop # repo added above
-          - sublime-text # custom repo may be required
+          - signal-desktop # repo added above
+          - sublime-text # repo added above
           - tlp # battery optimisation
           - tmux # advanced terminal
           # media
@@ -115,8 +184,12 @@
           - rhythmbox
           - vlc
           - yt-dlp
-          #- pinta # snap only?
         state: present
+
+    - name: Install snap packages
+      community.general.snap:
+        name:
+          - pinta
 
     #### OS SETTINGS ####
 

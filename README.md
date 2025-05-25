@@ -20,8 +20,8 @@ git push origin main
   
 Non-automated setup items:  
 ##########################  
-git  
-syncthing  
-keepassxc  
-ssh identities  
-balena-etcher
+ansible
+git
+syncthing
+keepassxc
+ssh identities
