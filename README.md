@@ -20,8 +20,8 @@ git push origin main
   
 Non-automated setup items:  
 ##########################  
-ansible
-git
-syncthing
-keepassxc
-ssh identities
+ansible  
+git  
+syncthing  
+keepassxc  
+ssh-identities
