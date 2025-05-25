@@ -89,7 +89,7 @@
           - baobab # disk usage analyser
           - bleachbit # cleaning utility
           #- brave-browser # not available in all repos
-          - chromium-browser
+          #- chromium-browser # snap only?
           #- cobang # repo added above
           #- codium # repo added above
           - curl
