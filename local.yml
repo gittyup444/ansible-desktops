@@ -68,19 +68,19 @@
             (veracrypt_download_page.content | regex_findall('https://.*?veracrypt-[0-9._]+-Ubuntu-22.04.*amd64.deb') | first)  | replace('&#43;', '+')
           }}
 
-    - name: Download the VeraCrypt .deb file
-      ansible.builtin.get_url:
-        url: "{{ veracrypt_deb_url }}"
-        dest: /tmp/veracrypt.deb
+- name: Download the VeraCrypt .deb file
+  ansible.builtin.get_url:
+    url: "{{ veracrypt_deb_url }}"
+    dest: /tmp/veracrypt.deb
 
-    - name: Install VeraCrypt from .deb file
-      ansible.builtin.command:
-        cmd: "gdebi -n /tmp/veracrypt.deb"
+- name: Install VeraCrypt using apt
+  ansible.builtin.apt:
+    deb: /tmp/veracrypt.deb
 
-    - name: Clean up downloaded .deb file
-      ansible.builtin.file:
-        path: /tmp/veracrypt.deb
-        state: absent
+- name: Clean up downloaded .deb file
+  ansible.builtin.file:
+    path: /tmp/veracrypt.deb
+    state: absent
 
     - name: install all apt packages
       package: # ansible module to use for this task
