@@ -93,7 +93,6 @@
           #- cobang # repo added above
           #- codium # repo added above
           - curl
-          - freefilesync
           - gdebi-core # required dependency for installing .deb files, likely already satisfied by default
           - gnome-disk-utility # disks
           - gparted
