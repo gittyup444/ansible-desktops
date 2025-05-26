@@ -10,7 +10,8 @@ sudo ansible-pull -U https://github.com/gittyup444/ansible-desktops.git local.ym
   
 OR, using url shortcut:  
   
-sudo ansible-pull -U https://tinyurl.com/donkey-desktops  
+sudo ansible-pull -U https://tinyurl.com/donkey-desktops  local.yml
+sudo ansible-pull -U https://tinyurl.com/donkey-desktops  local-flatpak.yml  
   
   
 To add changes:  

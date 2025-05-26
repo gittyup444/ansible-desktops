@@ -32,6 +32,12 @@
         name: gdebi-core
         state: present
 
+    - name: Check if Etcher is installed
+      command: balena-etcher-electron --version
+      register: etcher_installed
+      failed_when: false
+      changed_when: false
+
     - name: Fetch the latest Balena Etcher release URL
       uri:
         url: https://api.github.com/repos/balena-io/etcher/releases/latest
@@ -42,18 +48,31 @@
       set_fact:
         etcher_deb_url: "{{ etcher_release.json.assets | selectattr('browser_download_url', 'search', 'amd64.deb$') | map(attribute='browser_download_url') | first }}"
 
+    - name: Extract Etcher version from URL
+      set_fact:
+        etcher_latest_version: "{{ etcher_deb_url | regex_search('etcher-electron-([0-9.]+)', '\\1') }}"
+
     - name: Download the latest Balena Etcher .deb package
       get_url:
         url: "{{ etcher_deb_url }}"
         dest: /tmp/balena-etcher-electron.deb
+      when: etcher_installed.stdout is not defined or etcher_latest_version not in etcher_installed.stdout
 
     - name: Install Balena Etcher
       command: gdebi --non-interactive /tmp/balena-etcher-electron.deb
+      when: etcher_installed.stdout is not defined or etcher_latest_version not in etcher_installed.stdout
 
     - name: Clean up the .deb package
       file:
         path: /tmp/balena-etcher-electron.deb
         state: absent
+      when: etcher_installed.stdout is not defined or etcher_latest_version not in etcher_installed.stdout
+
+    - name: Check installed version of VeraCrypt
+      command: veracrypt --version
+      register: veracrypt_installed
+      failed_when: false
+      changed_when: false
 
     - name: Get the latest VeraCrypt download URL
       ansible.builtin.uri:
@@ -68,19 +87,31 @@
             (veracrypt_download_page.content | regex_findall('https://.*?veracrypt-[0-9._]+-Ubuntu-22.04.*amd64.deb') | first)  | replace('&#43;', '+')
           }}
 
+    - name: Extract VeraCrypt version from URL
+      set_fact:
+        veracrypt_latest_version: "{{ veracrypt_deb_url | regex_search('veracrypt-([0-9.]+)', '\\1') }}"
+
+    - name: Skip VeraCrypt install if latest version already installed
+      ansible.builtin.debug:
+        msg: "VeraCrypt is already installed and up-to-date (version {{ veracrypt_latest_version }})"
+      when: veracrypt_installed.stdout is defined and veracrypt_latest_version in veracrypt_installed.stdout
+
     - name: Download the VeraCrypt .deb file
-      ansible.builtin.get_url:
+      get_url:
         url: "{{ veracrypt_deb_url }}"
         dest: /tmp/veracrypt.deb
+      when: veracrypt_installed.stdout is not defined or veracrypt_latest_version not in veracrypt_installed.stdout
 
     - name: Install VeraCrypt using apt
-      ansible.builtin.apt:
+      apt:
         deb: /tmp/veracrypt.deb
+      when: veracrypt_installed.stdout is not defined or veracrypt_latest_version not in veracrypt_installed.stdout
 
     - name: Clean up downloaded .deb file
-      ansible.builtin.file:
+      file:
         path: /tmp/veracrypt.deb
         state: absent
+      when: veracrypt_installed.stdout is not defined or veracrypt_latest_version not in veracrypt_installed.stdout
 
     - name: install all apt packages
       package: # ansible module to use for this task
