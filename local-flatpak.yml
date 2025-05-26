@@ -22,4 +22,9 @@
         remote: flathub
       loop:
         - com.brave.Browser
+        - org.chromium.Chromium
+        - vn.hoabinh.quan.CoBang
+        - vn.hoabinh.quan.CoBang
+        - org.signal.Signal
+        - com.github.PintaProject.Pinta
 
