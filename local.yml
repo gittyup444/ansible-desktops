@@ -94,7 +94,10 @@
 
     - name: Extract VeraCrypt version from URL
       set_fact:
-        veracrypt_latest_version: "{{ (veracrypt_deb_url | regex_search('veracrypt-([0-9.]+)', '\\1')) }}"
+        veracrypt_latest_version: >-
+          {{
+            (veracrypt_deb_url | regex_search('veracrypt-([0-9.]+)', '\\1')) | string
+          }}
 
     - name: Skip VeraCrypt install if latest version already installed
       ansible.builtin.debug:
