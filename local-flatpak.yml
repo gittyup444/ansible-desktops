@@ -1,0 +1,25 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+    - name: Ensure Flatpak is installed
+      apt:
+        name: flatpak
+        state: present
+        update_cache: yes
+
+    - name: Add Flathub remote repository if not present
+      command: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+      args:
+        creates: /var/lib/flatpak/repo/flathub
+
+    - name: Install Flatpak applications
+      flatpak:
+        name: "{{ item }}"
+        state: present
+        remote: flathub
+      loop:
+        - com.brave.Browser
+

@@ -4,9 +4,11 @@ Ansible configuration for desktops
 To run locally, use:  
 ####################  
   
+sudo apt install ansible git  
+  
 sudo ansible-pull -U https://github.com/gittyup444/ansible-desktops.git local.yml  
   
-OR, use shortcut:  
+OR, using url shortcut:  
   
 sudo ansible-pull -U https://tinyurl.com/donkey-desktops  
   
@@ -20,8 +22,5 @@ git push origin main
   
 Non-automated setup items:  
 ##########################  
-ansible  
-git  
-syncthing  
-keepassxc  
-ssh-identities
+applications: ansible, git, syncthing  
+configs: ssh-identities  
