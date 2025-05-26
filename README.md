@@ -23,5 +23,6 @@ git push origin main
   
 Non-automated setup items:  
 ##########################  
-applications: ansible, git, syncthing  
+applications pre-requisites: ansible, git, syncthing  
+manual install required: veracrypt  
 configs: ssh-identities  
