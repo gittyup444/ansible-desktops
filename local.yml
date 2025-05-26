@@ -52,6 +52,10 @@
       set_fact:
         etcher_latest_version: "{{ etcher_deb_url | regex_search('etcher-electron-([0-9.]+)', '\\1') }}"
 
+    - name: Show detected Etcher version
+      debug:
+        msg: "Installed: {{ etcher_installed.stdout }}, Latest: {{ etcher_latest_version }}"
+
     - name: Download the latest Balena Etcher .deb package
       get_url:
         url: "{{ etcher_deb_url }}"
@@ -89,7 +93,7 @@
 
     - name: Extract VeraCrypt version from URL
       set_fact:
-        veracrypt_latest_version: "{{ veracrypt_deb_url | regex_search('veracrypt-([0-9.]+)', '\\1') }}"
+        veracrypt_latest_version: "{{ (veracrypt_deb_url | regex_search('veracrypt-([0-9.]+)', '\\1')) }}"
 
     - name: Skip VeraCrypt install if latest version already installed
       ansible.builtin.debug:
