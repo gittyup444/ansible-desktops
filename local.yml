@@ -3,7 +3,6 @@
   connection: local
   become: true
 
-# list of config file paths
   vars:
     files_to_copy:
       - src: files/home/config/bleachbit/bleachbit.ini
@@ -33,7 +32,7 @@
         state: present
 
     - name: Check if Etcher is installed
-      command: balena-etcher-electron --version
+      command: dpkg-query -W -f='${Version}' balena-etcher-electron
       register: etcher_installed
       failed_when: false
       changed_when: false
@@ -54,23 +53,25 @@
 
     - name: Show detected Etcher version
       debug:
-        msg: "Installed: {{ etcher_installed.stdout }}, Latest: {{ etcher_latest_version }}"
+        msg: >
+          Installed: {{ etcher_installed.stdout | default('NOT INSTALLED') }},
+          Latest: {{ etcher_latest_version | default('UNKNOWN') }}
 
     - name: Download the latest Balena Etcher .deb package
       get_url:
         url: "{{ etcher_deb_url }}"
         dest: /tmp/balena-etcher-electron.deb
-      when: etcher_installed.stdout is not defined or etcher_latest_version not in etcher_installed.stdout
+      when: etcher_installed.stdout is not defined or etcher_installed.stdout != etcher_latest_version
 
     - name: Install Balena Etcher
       command: gdebi --non-interactive /tmp/balena-etcher-electron.deb
-      when: etcher_installed.stdout is not defined or etcher_latest_version not in etcher_installed.stdout
+      when: etcher_installed.stdout is not defined or etcher_installed.stdout != etcher_latest_version
 
     - name: Clean up the .deb package
       file:
         path: /tmp/balena-etcher-electron.deb
         state: absent
-      when: etcher_installed.stdout is not defined or etcher_latest_version not in etcher_installed.stdout
+      when: etcher_installed.stdout is not defined or etcher_installed.stdout != etcher_latest_version
 
     - name: Check installed version of VeraCrypt
       command: veracrypt --version
@@ -98,58 +99,52 @@
     - name: Skip VeraCrypt install if latest version already installed
       ansible.builtin.debug:
         msg: "VeraCrypt is already installed and up-to-date (version {{ veracrypt_latest_version }})"
-      when: veracrypt_installed.stdout is defined and veracrypt_latest_version in veracrypt_installed.stdout
+      when: veracrypt_installed.stdout is defined and veracrypt_latest_version in (veracrypt_installed.stdout | string)
 
     - name: Download the VeraCrypt .deb file
       get_url:
         url: "{{ veracrypt_deb_url }}"
         dest: /tmp/veracrypt.deb
-      when: veracrypt_installed.stdout is not defined or veracrypt_latest_version not in veracrypt_installed.stdout
+      when: veracrypt_installed.stdout is not defined or veracrypt_latest_version not in (veracrypt_installed.stdout | string)
 
     - name: Install VeraCrypt using apt
       apt:
         deb: /tmp/veracrypt.deb
-      when: veracrypt_installed.stdout is not defined or veracrypt_latest_version not in veracrypt_installed.stdout
+      when: veracrypt_installed.stdout is not defined or veracrypt_latest_version not in (veracrypt_installed.stdout | string)
 
     - name: Clean up downloaded .deb file
       file:
         path: /tmp/veracrypt.deb
         state: absent
-      when: veracrypt_installed.stdout is not defined or veracrypt_latest_version not in veracrypt_installed.stdout
+      when: veracrypt_installed.stdout is not defined or veracrypt_latest_version not in (veracrypt_installed.stdout | string)
 
     - name: install all apt packages
-      package: # ansible module to use for this task
+      package:
         name: 
           # utilities
-          - baobab # disk usage analyser
-          - bleachbit # cleaning utility
-          #- brave-browser # not available in all repos
-          #- chromium-browser # snap only?
-          #- cobang # repo added above
-          #- codium # repo added above
+          - baobab
+          - bleachbit
           - curl
-          - gdebi-core # required dependency for installing .deb files, likely already satisfied by default
-          - gnome-disk-utility # disks
+          - gdebi-core
+          - gnome-disk-utility
           - gparted
           - grsync
-          - hardinfo # gui hardware overview
+          - hardinfo
           - htop
           - keepassxc
           - nextcloud-desktop
           - openssh-server
-          - remmina # remote desktop client
-          #- signal-desktop # repo added above
-          - sublime-text # custom repo may be required
-          - tlp # battery optimisation
-          - tmux # advanced terminal
+          - remmina
+          - sublime-text
+          - tlp
+          - tmux
           # media
-          - drawing # paint clone
-          - calibre # ebook manager
+          - drawing
+          - calibre
           - puddletag
           - rhythmbox
           - vlc
           - yt-dlp
-          #- pinta # snap only?
         state: present
 
     #### OS SETTINGS ####
