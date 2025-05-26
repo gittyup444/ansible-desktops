@@ -61,11 +61,11 @@
         return_content: yes
       register: veracrypt_download_page
 
-    - name: Extract VeraCrypt .deb file URL for Ubuntu 24.04
+    - name: Extract VeraCrypt .deb file URL for Ubuntu 22.04
       ansible.builtin.set_fact:
         veracrypt_deb_url: >
           {{ 
-            (veracrypt_download_page.content | regex_findall('https://.*?veracrypt-[0-9._]+-Ubuntu-24.04.*amd64.deb') | first)  | replace('&#43;', '+')
+            (veracrypt_download_page.content | regex_findall('https://.*?veracrypt-[0-9._]+-Ubuntu-22.04.*amd64.deb') | first)  | replace('&#43;', '+')
           }}
 
     - name: Download the VeraCrypt .deb file
