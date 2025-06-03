@@ -29,4 +29,4 @@
         - md.obsidian.Obsidian
         - org.freefilesync.FreeFileSync
         - com.system76.Popsicle # usb image flasher
-        - flatpak run com.vscodium.codium
+        - com.vscodium.codium
