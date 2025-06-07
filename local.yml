@@ -47,6 +47,7 @@
           - keepassxc
           - nextcloud-desktop
           - openssh-server
+          - pdfsam
           - remmina
           - tlp
           - tmux
