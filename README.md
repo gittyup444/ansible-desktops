@@ -9,12 +9,14 @@ Ansible configuration for desktops
   
 ### alternative URLs, using url shortcut:  
   
+Apt-repo apps:  
 `sudo ansible-pull -U https://tinyurl.com/setupttnnb  local.yml`  
+Flatpak-based apps:  
 `sudo ansible-pull -U https://tinyurl.com/setupttnnb  local-flatpak.yml`  
   
 ### Run using shell scripts (post syncthing setup):  
-`initial setup: Scripts/Config_backups/ansible/ansible-desktops/setup.sh`  
-`update only: Scripts/Config_backups/ansible/ansible-desktops/update.sh`  
+initial setup: `Scripts/Config_backups/ansible/ansible-desktops/setup.sh`  
+update only: `Scripts/Config_backups/ansible/ansible-desktops/update.sh`  
   
 ## To add changes to repo:  
 ```bash
