@@ -54,6 +54,7 @@
           - openssh-server
           - pdfarranger
           - remmina
+          - syncthing
           - tlp
           - tmux
           # media
