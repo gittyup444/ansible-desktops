@@ -63,10 +63,12 @@
           - tlp
           - tmux
           # media
+          - audacity
           - drawing
           - calibre
           - puddletag
           - rhythmbox
+          - soundconverter
           - vlc
           - yt-dlp
         state: present

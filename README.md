@@ -22,8 +22,6 @@ git add .
 git commit -m "<COMMENT>"  
 git push origin main  
 ```
-
-
   
 ## Non-automated setup items:   
 applications pre-requisites: ansible, git, (syncthing)  

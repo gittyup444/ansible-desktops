@@ -33,7 +33,7 @@
         - tv.plex.PlexDesktop
         - com.github.iwalton3.jellyfin-media-player
         - com.unicornsonlsd.finamp
-        - dev.aunetx.deezer
+        - org.telegram.desktop
 
     - name: Upgrade all flatpaks 📅
       ansible.builtin.command: flatpak update --noninteractive
