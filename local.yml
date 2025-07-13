@@ -113,14 +113,6 @@
       loop_control:
         label: "{{ item.src }}"
 
-    - name: Set Xed theme to Solarized Dark for logged-in GUI user
-      ansible.builtin.shell: |
-        export DISPLAY=:0
-        export XAUTHORITY=/home/{{ gui_user }}/.Xauthority
-        export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u {{ gui_user }})/bus
-        sudo -u {{ gui_user }} gsettings set org.x.editor.preferences.editor scheme 'solarized-dark'
-      become: yes
-
     #### FLATPAK ####
 
     - name: Ensure Flatpak is installed
