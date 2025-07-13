@@ -20,8 +20,8 @@
         owner: jack
         group: jack
         mode: "0664"
-      - src: files/home/config/cinnamon
-        dest: /home/jack/.config/cinnamon
+      - src: files/home/config/cinnamon/spices/grouped-window-list@cinnamon.org
+        dest: /home/jack/.config/cinnamon/spices/grouped-window-list@cinnamon.org
         owner: jack
         group: jack
         mode: "0664"
