@@ -5,6 +5,11 @@
 
   vars:
     files_to_copy:
+      - src: files/home/config/autostart/syncthing-start.desktop
+        dest: /home/jack/.config/autostart/syncthing-start.desktop
+        owner: jack
+        group: jack
+        mode: "0664"
       - src: files/home/config/bleachbit/bleachbit.ini
         dest: /home/jack/.config/bleachbit/bleachbit.ini
         owner: jack
@@ -63,6 +68,7 @@
           - tlp
           - tree
           - tmux
+          - xed
           # media
           - audacity
           - drawing
@@ -106,3 +112,13 @@
       loop: "{{ files_to_copy }}"
       loop_control:
         label: "{{ item.src }}"
+
+    - name: Set Xed theme to Solarized Dark
+      ansible.builtin.shell: |
+        gsettings set org.x.editor.preferences.editor scheme 'solarized-dark'
+      environment:
+        DISPLAY: ":0"
+        XAUTHORITY: /home/{{ ansible_user }}/.Xauthority
+      become: yes
+      become_user: "{{ ansible_user }}"
+
