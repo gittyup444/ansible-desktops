@@ -113,14 +113,14 @@
       loop_control:
         label: "{{ item.src }}"
 
-    - name: Set Xed theme to Solarized Dark with full environment
+    - name: Set Xed theme to Solarized Dark for logged-in GUI user
       ansible.builtin.shell: |
         export DISPLAY=:0
-        export XAUTHORITY=/home/{{ ansible_user_id }}/.Xauthority
-        export DBUS_SESSION_BUS_ADDRESS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$(pgrep -u {{ ansible_user_id }} -f xed | head -n1)/environ | tr '\0' '\n' | grep DBUS_SESSION_BUS_ADDRESS | cut -d= -f2-)
-        gsettings set org.x.editor.preferences.editor scheme 'solarized-dark'
+        export XAUTHORITY=/home/jack/.Xauthority
+        export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u jack)/bus
+        sudo -u jack gsettings set org.x.editor.preferences.editor scheme 'solarized-dark'
       become: yes
-      become_user: "{{ ansible_user_id }}"
+
 
 
 
