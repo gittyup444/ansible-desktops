@@ -20,6 +20,11 @@
         owner: jack
         group: jack
         mode: "0664"
+      - src: files/home/config/cinnamon
+        dest: /home/jack/.config/cinnamon
+        owner: jack
+        group: jack
+        mode: "0664"
 
   tasks:
 
