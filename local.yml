@@ -118,7 +118,8 @@
         gsettings set org.x.editor.preferences.editor scheme 'solarized-dark'
       environment:
         DISPLAY: ":0"
-        XAUTHORITY: /home/{{ ansible_user }}/.Xauthority
+        XAUTHORITY: "/home/{{ ansible_user_id }}/.Xauthority"
       become: yes
-      become_user: "{{ ansible_user }}"
+      become_user: "{{ ansible_user_id }}"
+
 
