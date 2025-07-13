@@ -15,6 +15,11 @@
         owner: jack
         group: jack
         mode: "0600"
+      - src: files/home/config/gtk-3.0/bookmarks
+        dest: /home/jack/.config/gtk-3.0/bookmarks
+        owner: jack
+        group: jack
+        mode: "0664"
 
   tasks:
 

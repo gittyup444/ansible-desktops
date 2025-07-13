@@ -30,3 +30,7 @@
         - org.freefilesync.FreeFileSync
         - com.system76.Popsicle # usb image flasher
         - com.vscodium.codium
+        - tv.plex.PlexDesktop
+        - com.github.iwalton3.jellyfin-media-player
+        - com.unicornsonlsd.finamp
+        - dev.aunetx.deezer

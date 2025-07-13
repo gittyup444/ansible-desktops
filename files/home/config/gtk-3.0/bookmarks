@@ -1,0 +1,15 @@
+file:///home/jack/Documents
+file:///home/jack/Music
+file:///home/jack/Pictures
+file:///home/jack/Videos
+file:///home/jack/Downloads
+file:///home/jack/Sync
+file:///home/jack/Nextcloud
+file:///home/jack/Scripts
+file:///home/jack/Music/Music%20Downloads
+sftp://srv/home/donkey24 srv /home
+sftp://srv/home/donkey24/Downloads srv /downloads
+sftp://nas/data nas /data
+sftp://nas/data2 nas /data2
+sftp://cctv/home/donkey24 cctv /home
+sftp://root@100.92.29.58/homeassistant hass
