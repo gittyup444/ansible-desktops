@@ -25,11 +25,6 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0664"
-      - src: files/home/config/cinnamon/spices/grouped-window-list@cinnamon.org
-        dest: /home/{{ gui_user }}/.config/cinnamon/spices/grouped-window-list@cinnamon.org
-        owner: "{{ gui_user }}"
-        group: "{{ gui_user }}"
-        mode: "0664"
 
   tasks:
 
