@@ -6,29 +6,29 @@
   vars:
     files_to_copy:
       - src: files/home/config/autostart/syncthing-start.desktop
-        dest: /home/jack/.config/autostart/syncthing-start.desktop
-        owner: jack
-        group: jack
+        dest: /home/{{ gui_user }}/.config/autostart/syncthing-start.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
         mode: "0664"
       - src: files/home/config/bleachbit/bleachbit.ini
-        dest: /home/jack/.config/bleachbit/bleachbit.ini
-        owner: jack
-        group: jack
+        dest: /home/{{ gui_user }}/.config/bleachbit/bleachbit.ini
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
         mode: "0664"
       - src: files/home/config/vlc/vlcrc
-        dest: /home/jack/.config/vlc/vlcrc
-        owner: jack
-        group: jack
+        dest: /home/{{ gui_user }}/.config/vlc/vlcrc
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
         mode: "0600"
       - src: files/home/config/gtk-3.0/bookmarks
-        dest: /home/jack/.config/gtk-3.0/bookmarks
-        owner: jack
-        group: jack
+        dest: /home/{{ gui_user }}/.config/gtk-3.0/bookmarks
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
         mode: "0664"
       - src: files/home/config/cinnamon/spices/grouped-window-list@cinnamon.org
-        dest: /home/jack/.config/cinnamon/spices/grouped-window-list@cinnamon.org
-        owner: jack
-        group: jack
+        dest: /home/{{ gui_user }}/.config/cinnamon/spices/grouped-window-list@cinnamon.org
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
         mode: "0664"
 
   tasks:
@@ -116,9 +116,9 @@
     - name: Set Xed theme to Solarized Dark for logged-in GUI user
       ansible.builtin.shell: |
         export DISPLAY=:0
-        export XAUTHORITY=/home/jack/.Xauthority
-        export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u jack)/bus
-        sudo -u jack gsettings set org.x.editor.preferences.editor scheme 'solarized-dark'
+        export XAUTHORITY=/home/{{ gui_user }}/.Xauthority
+        export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u {{ gui_user }})/bus
+        sudo -u {{ gui_user }} gsettings set org.x.editor.preferences.editor scheme 'solarized-dark'
       become: yes
 
     #### FLATPAK ####
