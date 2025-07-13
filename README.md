@@ -1,16 +1,15 @@
 # ansible_desktop
 Ansible configuration for desktops  
   
-## To run on desktop:  
+## To run on desktop (example as user=jack):  
   
 Step 1: `sudo apt install ansible git`  
   
-Step 2: `sudo ansible-pull -U https://github.com/gittyup444/ansible-desktops.git local.yml`  
+Step 2: `sudo ansible-pull -U https://github.com/gittyup444/ansible-desktops.git -e "gui_user=jack" local.yml`  
   
-### alternative URLs, using url shortcut:  
+### Or using url shortcut:  
   
-Apt-repo apps: `sudo ansible-pull -U https://tinyurl.com/setupttnnb  local.yml`  
-Flatpak-based apps: `sudo ansible-pull -U https://tinyurl.com/setupttnnb  local-flatpak.yml`  
+Apt-repo apps: `sudo ansible-pull -U https://tinyurl.com/setupttnnb -e "gui_user=jack" local.yml`  
   
 ### Run using shell scripts (post syncthing setup):  
 initial setup: `Scripts/Config_backups/ansible/ansible-desktops/setup.sh`  
