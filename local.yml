@@ -25,6 +25,11 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0664"
+      - src: files/home/local/share/applications/veracrypt.desktop
+        dest: /home/{{ gui_user }}/.local/share/applications/veracrypt.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0664"
 
   tasks:
 
