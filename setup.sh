@@ -1,3 +1,8 @@
 #!/bin/bash
-sudo apt install ansible git
-sudo ansible-pull -U https://github.com/gittyup444/ansible-desktops.git -e "gui_user=jack" local.yml
+
+GUI_USER="jack"
+REPO_URL="https://github.com/gittyup444/ansible-desktops.git"
+PLAYBOOK="local.yml"
+
+sudo apt install ansible git syncthing
+sudo /usr/bin/ansible-pull -U "$REPO_URL" -e "gui_user=$GUI_USER" "$PLAYBOOK"
