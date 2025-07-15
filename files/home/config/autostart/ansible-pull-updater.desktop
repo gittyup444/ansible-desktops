@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=/home/jack/Scripts/Config_backups/ansible/desktop-auto-update.sh
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=Ansible Updater Prompt
+Comment=Prompt to run ansible-pull at session start
+X-GNOME-Autostart-Delay=90
+Name[en_GB]=ansible-pull-updater.desktop

@@ -10,6 +10,11 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0664"
+      - src: files/home/config/autostart/ansible-pull-updater.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/ansible-pull-updater.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0664"
       - src: files/home/config/bleachbit/bleachbit.ini
         dest: /home/{{ gui_user }}/.config/bleachbit/bleachbit.ini
         owner: "{{ gui_user }}"
@@ -30,6 +35,7 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0664"
+
 
   tasks:
 
@@ -112,6 +118,13 @@
       loop: "{{ files_to_copy }}"
       loop_control:
         label: "{{ item.src }}"
+
+    - name: Ensure symlink for SSH config is present
+      ansible.builtin.file:
+        src: /home/{{ gui_user }}/Scripts/Config_backups/SSH/config
+        dest: /home/{{ gui_user }}/.ssh/config
+        state: link
+        force: true
 
     #### FLATPAK ####
 
