@@ -6,13 +6,13 @@
   vars:
     files_to_copy:
         # autostart files - NOTE: THESE FILES CONTAIN HARDCODED USERNAME REFS
-      - src: files/home/config/autostart/syncthing-start.desktop
-        dest: /home/{{ gui_user }}/.config/autostart/syncthing-start.desktop
+      - src: files/home/config/autostart/ansible-pull-updater.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/ansible-pull-updater.desktop
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0774"
-      - src: files/home/config/autostart/ansible-pull-updater.desktop
-        dest: /home/{{ gui_user }}/.config/autostart/ansible-pull-updater.desktop
+      - src: files/home/config/autostart/syncthing-start.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/syncthing-start.desktop
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0774"
