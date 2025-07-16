@@ -5,7 +5,7 @@
 
   vars:
     files_to_copy:
-        # autostart files
+        # autostart files - NOTE: THESE FILES CONTAIN HARDCODED USERNAME REFS
       - src: files/home/config/autostart/syncthing-start.desktop
         dest: /home/{{ gui_user }}/.config/autostart/syncthing-start.desktop
         owner: "{{ gui_user }}"
@@ -16,7 +16,7 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0774"
-        # menu entry files
+        # menu entry files - NOTE: THESE FILES CONTAIN HARDCODED USERNAME REFS
       - src: files/home/local/share/applications/ansible-pull-manual-update.desktop
         dest: /home/{{ gui_user }}/.local/share/applications/ansible-pull-manual-update.desktop
         owner: "{{ gui_user }}"
@@ -128,7 +128,7 @@
 
     - name: Ensure symlink for SSH config is present
       ansible.builtin.file:
-        src: /home/{{ gui_user }}/Scripts/Config_backups/SSH/config
+        src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/ssh/config
         dest: /home/{{ gui_user }}/.ssh/config
         state: link
         force: true

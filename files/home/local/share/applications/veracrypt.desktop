@@ -1,9 +1,12 @@
 [Desktop Entry]
 Version=1.0
+Type=Application
 Name=VeraCrypt
+GenericName=Disk Encryption Utility
 Comment=Launch VeraCrypt from AppImage
 Exec=/home/jack/PortableApps/VeraCrypt-1.26.24-x86_64.AppImage
 Icon=/usr/share/icons/Mint-Y/actions/32@2x/xfsm-lock.png
 Terminal=false
-Type=Application
 Categories=Utility;Security;
+StartupNotify=true
+
