@@ -17,6 +17,11 @@
         group: "{{ gui_user }}"
         mode: "0774"
         # menu entry files
+      - src: files/home/local/share/applications/ansible-pull-manual-update.desktop
+        dest: /home/{{ gui_user }}/.local/share/applications/ansible-pull-manual-update.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0774"
       - src: files/home/local/share/applications/veracrypt.desktop
         dest: /home/{{ gui_user }}/.local/share/applications/veracrypt.desktop
         owner: "{{ gui_user }}"

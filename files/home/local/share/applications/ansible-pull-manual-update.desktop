@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Run Manual Ansible System Update
+Name[en_GB]=Run Manual Ansible System Update
+Comment=Manually run the desktop ansible-pull update script
+Exec=/home/jack/Scripts/Config_backups/ansible/desktop-auto-update.sh
+Icon=/usr/share/icons/Mint-Y/apps/32@2x/system-software-update.png
+Terminal=false
+Type=Application
+Categories=Utility
