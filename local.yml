@@ -5,16 +5,24 @@
 
   vars:
     files_to_copy:
+        # autostart files
       - src: files/home/config/autostart/syncthing-start.desktop
         dest: /home/{{ gui_user }}/.config/autostart/syncthing-start.desktop
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
-        mode: "0664"
+        mode: "0774"
       - src: files/home/config/autostart/ansible-pull-updater.desktop
         dest: /home/{{ gui_user }}/.config/autostart/ansible-pull-updater.desktop
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
-        mode: "0664"
+        mode: "0774"
+        # menu entry files
+      - src: files/home/local/share/applications/veracrypt.desktop
+        dest: /home/{{ gui_user }}/.local/share/applications/veracrypt.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0774"
+        # config files
       - src: files/home/config/bleachbit/bleachbit.ini
         dest: /home/{{ gui_user }}/.config/bleachbit/bleachbit.ini
         owner: "{{ gui_user }}"
@@ -30,12 +38,6 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0664"
-      - src: files/home/local/share/applications/veracrypt.desktop
-        dest: /home/{{ gui_user }}/.local/share/applications/veracrypt.desktop
-        owner: "{{ gui_user }}"
-        group: "{{ gui_user }}"
-        mode: "0664"
-
 
   tasks:
 
