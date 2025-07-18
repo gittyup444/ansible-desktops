@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=/home/jack/Scripts/Config_backups/ansible/desktop-auto-update.sh
+Exec=sh -c "$HOME/Scripts/Config_backups/ansible/desktop-auto-update.sh"
 Hidden=false
 NoDisplay=false
 X-GNOME-Autostart-enabled=true
