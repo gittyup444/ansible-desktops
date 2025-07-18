@@ -7,5 +7,5 @@ X-GNOME-Autostart-enabled=true
 Name=Ansible Updater Prompt
 Comment=Prompt to run ansible-pull at session start
 GenericName=Manual Ansible Update Runner
-X-GNOME-Autostart-Delay=90
+X-GNOME-Autostart-Delay=30
 Name[en_GB]=ansible-pull-updater.desktop
