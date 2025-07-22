@@ -17,6 +17,11 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0774"
+      - src: files/home/config/autostart/com.nextcloud.desktopclient.nextcloud.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/com.nextcloud.desktopclient.nextcloud.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0774"
       - src: files/home/config/autostart/syncthing-start.desktop
         dest: /home/{{ gui_user }}/.config/autostart/syncthing-start.desktop
         owner: "{{ gui_user }}"
