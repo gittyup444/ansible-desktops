@@ -36,3 +36,5 @@ remaining steps:
  - grub set-up  
  - ssh-identities  
  - sound switcher  
+ - non-standard symlinks, e.g. to additional storage  
+
