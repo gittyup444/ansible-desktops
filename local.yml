@@ -7,6 +7,11 @@
     files_to_copy:
         # autostart files 
         # NOTE: THESE FILES ARE USER-AGNOSTIC BUT REQUIRE SYNCTHING DIR "Scripts" to be present.
+      - src: files/home/config/autostart/configs-backup-script.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/configs-backup-script.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0774"
       - src: files/home/config/autostart/ansible-pull-updater.desktop
         dest: /home/{{ gui_user }}/.config/autostart/ansible-pull-updater.desktop
         owner: "{{ gui_user }}"

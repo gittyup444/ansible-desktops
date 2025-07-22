@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Exec=sh -c "$HOME/Scripts/Backup_scripts/desktop_BackupCommands_General.sh"
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=Trigger Script to Backup Configs
+Comment=Automatically trigger config backups 5 minutes after logging in
+GenericName=Manual Ansible Update Runner
+X-GNOME-Autostart-Delay=300
+Name[en_GB]=configs-backup-script.desktop
