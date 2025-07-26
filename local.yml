@@ -101,13 +101,7 @@
           - vlc
           - yt-dlp
         state: present
-      register: apt_install_result
       ignore_errors: yes
-
-    - name: Warn if any apt packages failed to install
-      debug:
-        msg: "Some packages may not have installed properly."
-      when: apt_install_result.failed
 
 
     #### OS SETTINGS ####
@@ -131,13 +125,7 @@
       loop: "{{ files_to_copy }}"
       loop_control:
         label: "{{ item.src }}"
-      register: copy_results
       ignore_errors: yes
-
-    - name: Warn about failed file copies
-      debug:
-        msg: "File copy failed for at least one item."
-      when: copy_results.failed
 
     - name: Ensure symlink for SSH config is present
       ansible.builtin.file:
