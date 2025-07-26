@@ -133,7 +133,7 @@
         dest: /home/{{ gui_user }}/.ssh/config
         state: link
         force: true
-        ignore_errors: yes
+      ignore_errors: yes
 
     #### FLATPAK ####
 
