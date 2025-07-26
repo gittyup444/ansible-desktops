@@ -71,10 +71,9 @@
         name: gdebi-core
         state: present
 
-    - name: install all apt packages
+    - name: Install all apt packages (gracefully)
       package:
-        name: 
-          # utilities
+        name:
           - baobab
           - bleachbit
           - curl
@@ -93,7 +92,6 @@
           - tlp
           - tree
           - tmux
-          # media
           - audacity
           - drawing
           - calibre
@@ -103,6 +101,14 @@
           - vlc
           - yt-dlp
         state: present
+      register: apt_install_result
+      ignore_errors: yes
+
+    - name: Warn if any apt packages failed to install
+      debug:
+        msg: "Some packages may not have installed properly."
+      when: apt_install_result.failed
+
 
     #### OS SETTINGS ####
 
@@ -115,18 +121,7 @@
 
     #### CONFIG FILES ####
 
-    - name: Ensure destination directories exist and set permissions
-      file:
-        path: "{{ item.dest | dirname }}"
-        state: directory
-        owner: "{{ item.owner }}"
-        group: "{{ item.group }}"
-        mode: "0755"
-      loop: "{{ files_to_copy }}"
-      loop_control:
-        label: "{{ item.dest }}"
-
-    - name: Copy config files
+    - name: Copy config files (gracefully)
       copy:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
@@ -136,6 +131,13 @@
       loop: "{{ files_to_copy }}"
       loop_control:
         label: "{{ item.src }}"
+      register: copy_results
+      ignore_errors: yes
+
+    - name: Warn about failed file copies
+      debug:
+        msg: "File copy failed for at least one item."
+      when: copy_results.failed
 
     - name: Ensure symlink for SSH config is present
       ansible.builtin.file:
@@ -143,6 +145,7 @@
         dest: /home/{{ gui_user }}/.ssh/config
         state: link
         force: true
+        ignore_errors: yes
 
     #### FLATPAK ####
 
