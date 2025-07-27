@@ -34,6 +34,11 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0774"
+      - src: files/home/local/share/applications/config-backup-manual-run.desktop
+        dest: /home/{{ gui_user }}/.local/share/applications/config-backup-manual-run.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0774"
       - src: files/home/local/share/applications/veracrypt.desktop
         dest: /home/{{ gui_user }}/.local/share/applications/veracrypt.desktop
         owner: "{{ gui_user }}"
@@ -103,38 +108,6 @@
         state: present
       ignore_errors: yes
 
-
-    #### OS SETTINGS ####
-
-    - name: Copy wallpaper file
-      copy:
-        src: files/wallpapers/spectrum_curves.jpg
-        dest: /usr/share/backgrounds/ansible-wallpaper.jpg
-        owner: root
-        group: root
-
-    #### CONFIG FILES ####
-
-    - name: Copy config files (gracefully)
-      copy:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        owner: "{{ item.owner }}"
-        group: "{{ item.group }}"
-        mode: "{{ item.mode }}"
-      loop: "{{ files_to_copy }}"
-      loop_control:
-        label: "{{ item.src }}"
-      ignore_errors: yes
-
-    - name: Ensure symlink for SSH config is present
-      ansible.builtin.file:
-        src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/ssh/config
-        dest: /home/{{ gui_user }}/.ssh/config
-        state: link
-        force: true
-      ignore_errors: yes
-
     #### FLATPAK ####
 
     - name: Ensure Flatpak is installed
@@ -172,5 +145,37 @@
       ansible.builtin.command: flatpak update --noninteractive
       register: flatpak_update_output
       changed_when: "'app/' in flatpak_update_output.stdout"
+
+    #### OS SETTINGS ####
+
+    - name: Copy wallpaper file
+      copy:
+        src: files/wallpapers/pblache_colors.jpg
+        dest: /usr/share/backgrounds/ansible-wallpaper.jpg
+        owner: root
+        group: root
+
+    #### CONFIG FILES ####
+
+    - name: Copy config files (gracefully)
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode }}"
+      loop: "{{ files_to_copy }}"
+      loop_control:
+        label: "{{ item.src }}"
+      ignore_errors: yes
+
+    - name: Ensure symlink for SSH config is present
+      ansible.builtin.file:
+        src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/ssh/config
+        dest: /home/{{ gui_user }}/.ssh/config
+        state: link
+        force: true
+      ignore_errors: yes
+
 
 

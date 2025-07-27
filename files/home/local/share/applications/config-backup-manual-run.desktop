@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Run Manual Config Backup
+Name[en_GB]=Run Manual Config Backup
+GenericName=Manual Config Backup Runner
+Comment=Manually run the desktop configs backup script
+Exec=sh -c "$HOME/Scripts/Backup_scripts/desktop_BackupCommands_General.sh"
+Icon=/usr/share/icons/Mint-Y/apps/32@2x/system-settings.png
+Terminal=false
+Categories=Utility;
+StartupNotify=true
+

@@ -32,6 +32,7 @@ remaining steps:
  - sudo visudo  
  - explorer list view  
  - xed dark theme (Oblivion)  
+ - git config  
  - keyboard shortcuts  
  - tailscale - `curl -fsSL https://tailscale.com/install.sh | sh`  
  - browser sign-ins  
