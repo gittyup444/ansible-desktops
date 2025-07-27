@@ -26,11 +26,14 @@ git push origin main
 ## Non-automated setup items:   
 pre-requisites:  
  - ansible, git, syncthing (essential directories)  
- - ssh dir  
+ - ssh dir
+
 remaining steps:  
  - sudo visudo  
+ - explorer list view  
+ - xed dark theme (Oblivion)  
  - keyboard shortcuts  
- - tailscale  
+ - tailscale - `curl -fsSL https://tailscale.com/install.sh | sh`  
  - browser sign-ins  
  - nextcloud sign-in  
  - grub set-up  
