@@ -93,6 +93,7 @@
           - openssh-server
           - pdfarranger
           - remmina
+          - sqlitebrowser
           - syncthing
           - tlp
           - tree
