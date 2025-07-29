@@ -206,9 +206,9 @@
         - key: "/org/cinnamon/desktop/keybindings/media-keys/screensaver"
           value: "['<Primary><Alt>l', '<Super>l']"
         - key: "/org/cinnamon/desktop/keybindings/looking-glass-keybinding"
-          value: "[]"
+          value: "@as []"
         - key: "/org/cinnamon/desktop/keybindings/media-keys/video-rotation-lock"
-          value: "[]"
+          value: "@as []"
       tags: keyboard_shortcuts
 
     - name: Configure Cinnamon custom keyboard shortcuts
