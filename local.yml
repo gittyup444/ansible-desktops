@@ -165,10 +165,8 @@
 
     - name: Ensure dconf database exists for user
       shell: |
-        # Initialize user dconf database if it doesn't exist
         dconf dump / > /dev/null 2>&1 || true
-        # Ensure user has a session bus
-        export $(dbus-launch)
+        export $(dbus-launch) || true
       become: false
       become_user: "{{ gui_user }}"
       environment:
