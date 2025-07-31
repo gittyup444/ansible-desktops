@@ -158,6 +158,24 @@
 
     #### DESKTOP & APPLICATION SETTINGS ####
 
+    - name: Get user ID for XDG_RUNTIME_DIR
+      shell: "id -u {{ gui_user }}"
+      register: gui_user_id
+      changed_when: false
+
+    - name: Ensure dconf database exists for user
+      shell: |
+        # Initialize user dconf database if it doesn't exist
+        dconf dump / > /dev/null 2>&1 || true
+        # Ensure user has a session bus
+        export $(dbus-launch)
+      become: false
+      become_user: "{{ gui_user }}"
+      environment:
+        DISPLAY: ":0"
+        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
+      tags: desktop_settings
+
     - name: Configure Cinnamon desktop settings
       dconf:
         key: "{{ item.key }}"
@@ -165,6 +183,9 @@
         state: present
       become: false
       become_user: "{{ gui_user }}"
+      environment:
+        DISPLAY: ":0"
+        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
       loop:
         # Remove all items from desktop
         - key: "/org/nemo/desktop/computer-icon-visible"
@@ -180,9 +201,24 @@
         # Set Nemo file browser to List View by default
         - key: "/org/nemo/preferences/default-folder-viewer"
           value: "'list-view'"
+        # Alternative Nemo view settings
+        - key: "/org/nemo/preferences/default-view"
+          value: "'list-view'"
         # Set xed text editor theme to Oblivion
         - key: "/org/x/editor/preferences/editor/scheme"
           value: "'oblivion'"
+      tags: desktop_settings
+
+    - name: Reset Nemo folder view preferences to apply default list view
+      shell: |
+        # Kill any running Nemo processes
+        pkill -f nemo || true
+        # Remove cached folder view preferences so default applies
+        rm -f /home/{{ gui_user }}/.config/nemo/desktop-metadata || true
+        # Clear gvfs metadata that stores per-folder view settings
+        rm -rf /home/{{ gui_user }}/.local/share/gvfs-metadata || true
+      become: false
+      become_user: "{{ gui_user }}"
       tags: desktop_settings
 
     #### KEYBOARD SHORTCUTS ####
@@ -194,6 +230,9 @@
         state: present
       become: false
       become_user: "{{ gui_user }}"
+      environment:
+        DISPLAY: ":0"
+        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
       loop:
         - key: "/org/cinnamon/desktop/keybindings/media-keys/shutdown"
           value: "['<Primary><Alt>Delete', 'XF86PowerOff']"
@@ -211,6 +250,18 @@
           value: "@as []"
       tags: keyboard_shortcuts
 
+    - name: Enable custom keybindings schema in Cinnamon
+      dconf:
+        key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom-list"
+        value: "['custom0', 'custom1', 'custom2', 'custom3', 'custom5']"
+        state: present
+      become: false
+      become_user: "{{ gui_user }}"
+      environment:
+        DISPLAY: ":0"
+        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
+      tags: keyboard_shortcuts
+
     - name: Configure Cinnamon custom keyboard shortcuts
       dconf:
         key: "{{ item.key }}"
@@ -218,6 +269,9 @@
         state: present
       become: false
       become_user: "{{ gui_user }}"
+      environment:
+        DISPLAY: ":0"
+        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
       loop:
         # KeepassXC shortcut
         - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/binding"
@@ -258,11 +312,23 @@
           value: "'/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=obsidian.sh --file-forwarding md.obsidian.Obsidian @@u %U @@'"
         - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/name"
           value: "'Obsidian'"
-        
-        # Register all custom shortcuts in the custom-list
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom-list"
-          value: "['custom0', 'custom1', 'custom2', 'custom3', 'custom5']"
       tags: keyboard_shortcuts
+
+    - name: Restart Cinnamon to apply all settings
+      shell: |
+        # Kill existing Cinnamon process
+        pkill -f cinnamon || true
+        sleep 2
+        # Restart Cinnamon
+        nohup cinnamon --replace > /dev/null 2>&1 &
+        sleep 3
+      become: false
+      become_user: "{{ gui_user }}"
+      environment:
+        DISPLAY: ":0"
+        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
+      when: ansible_env.XDG_CURRENT_DESKTOP == "X-Cinnamon" or ansible_env.XDG_CURRENT_DESKTOP is not defined
+      tags: [keyboard_shortcuts, desktop_settings]
 
     #### CONFIG FILES ####
 
