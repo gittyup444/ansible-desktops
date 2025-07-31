@@ -163,93 +163,93 @@
       register: gui_user_id
       changed_when: false
 
-    - name: Ensure dconf database exists for user
+    - name: Configure Cinnamon desktop settings with gsettings
       shell: |
-        dconf dump / > /dev/null 2>&1 || true
-        export $(dbus-launch) || true
-      become: false
-      become_user: "{{ gui_user }}"
-      environment:
-        DISPLAY: ":0"
-        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
-      tags: desktop_settings
-
-    - name: Configure Cinnamon desktop settings
-      dconf:
-        key: "{{ item.key }}"
-        value: "{{ item.value }}"
-        state: present
-      become: false
-      become_user: "{{ gui_user }}"
-      environment:
-        DISPLAY: ":0"
-        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
-      loop:
         # Remove all items from desktop
-        - key: "/org/nemo/desktop/computer-icon-visible"
-          value: "false"
-        - key: "/org/nemo/desktop/home-icon-visible"
-          value: "false"
-        - key: "/org/nemo/desktop/network-icon-visible"
-          value: "false"
-        - key: "/org/nemo/desktop/trash-icon-visible"
-          value: "false"
-        - key: "/org/nemo/desktop/volumes-visible"
-          value: "false"
-        # Set Nemo file browser to List View by default
-        - key: "/org/nemo/preferences/default-folder-viewer"
-          value: "'list-view'"
-        # Alternative Nemo view settings
-        - key: "/org/nemo/preferences/default-view"
-          value: "'list-view'"
+        gsettings set org.nemo.desktop computer-icon-visible false
+        gsettings set org.nemo.desktop home-icon-visible false
+        gsettings set org.nemo.desktop network-icon-visible false
+        gsettings set org.nemo.desktop trash-icon-visible false
+        gsettings set org.nemo.desktop volumes-visible false
+        
         # Set xed text editor theme to Oblivion
-        - key: "/org/x/editor/preferences/editor/scheme"
-          value: "'oblivion'"
+        gsettings set org.x.editor.preferences.editor scheme 'oblivion'
+      become: false
+      become_user: "{{ gui_user }}"
+      environment:
+        DISPLAY: ":0"
+        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
       tags: desktop_settings
 
-    - name: Reset Nemo folder view preferences to apply default list view
+    - name: Kill all Nemo processes before changing view settings
       shell: |
         pkill -f nemo || true
-        rm -f /home/{{ gui_user }}/.config/nemo/desktop-metadata || true
-        rm -rf /home/{{ gui_user }}/.local/share/gvfs-metadata || true
+        pkill -f nemo-desktop || true
+        sleep 2
       become: false
       become_user: "{{ gui_user }}"
       tags: desktop_settings
+      ignore_errors: yes
+
+    - name: Reset all Nemo view preferences completely
+      shell: |
+        # Remove all Nemo view metadata and configuration
+        rm -f /home/{{ gui_user }}/.config/nemo/desktop-metadata || true
+        rm -rf /home/{{ gui_user }}/.local/share/gvfs-metadata || true
+        rm -f /home/{{ gui_user }}/.config/nemo/accels || true
+        rm -rf /home/{{ gui_user }}/.cache/nemo || true
+        
+        # Reset all view-related gsettings
+        gsettings reset org.nemo.preferences default-folder-viewer || true
+        gsettings reset org.nemo.preferences default-view || true
+        gsettings reset org.nemo.preferences default-sort-order || true
+        gsettings reset org.nemo.preferences default-sort-in-reverse || true
+        
+        # Set to list view with multiple methods
+        gsettings set org.nemo.preferences default-folder-viewer 'list-view'
+        gsettings set org.nemo.preferences default-view 'list-view'
+        gsettings set org.nemo.list-view default-zoom-level 'standard'
+        gsettings set org.nemo.preferences default-sort-order 'name'
+        gsettings set org.nemo.preferences default-sort-in-reverse false
+        
+        # Also try the window-state approach
+        gsettings set org.nemo.window-state start-with-sidebar true
+        gsettings set org.nemo.window-state start-with-status-bar true
+        gsettings set org.nemo.window-state start-with-toolbar true
+      become: false
+      become_user: "{{ gui_user }}"
+      environment:
+        DISPLAY: ":0"
+        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
+      tags: desktop_settings
+      ignore_errors: yes
+
+    - name: Create Nemo configuration directory and set view preferences
+      shell: |
+        mkdir -p /home/{{ gui_user }}/.config/nemo
+        
+        # Create a custom nemo configuration that forces list view
+        cat > /home/{{ gui_user }}/.config/nemo/nemo-list-view.conf << 'EOF'
+        [DEFAULT]
+        default-folder-viewer=list-view
+        default-view=list-view
+        EOF
+        
+        chown {{ gui_user }}:{{ gui_user }} /home/{{ gui_user }}/.config/nemo/nemo-list-view.conf || true
+      tags: desktop_settings
+      ignore_errors: yes
 
     #### KEYBOARD SHORTCUTS ####
 
-    - name: Configure Cinnamon media-key shortcuts
-      dconf:
-        key: "{{ item.key }}"
-        value: "{{ item.value }}"
-        state: present
-      become: false
-      become_user: "{{ gui_user }}"
-      environment:
-        DISPLAY: ":0"
-        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
-      loop:
-        - key: "/org/cinnamon/desktop/keybindings/media-keys/shutdown"
-          value: "['<Primary><Alt>Delete', 'XF86PowerOff']"
-        - key: "/org/cinnamon/desktop/keybindings/media-keys/logout"
-          value: "['<Primary><Alt>End']"
-        - key: "/org/cinnamon/desktop/keybindings/media-keys/terminal"
-          value: "['<Primary><Alt>t', '<Super>t']"
-        - key: "/org/cinnamon/desktop/keybindings/media-keys/www"
-          value: "['<Primary><Alt>w', '<Super>w']"
-        - key: "/org/cinnamon/desktop/keybindings/media-keys/screensaver"
-          value: "['<Primary><Alt>l', '<Super>l']"
-        - key: "/org/cinnamon/desktop/keybindings/looking-glass-keybinding"
-          value: "@as []"
-        - key: "/org/cinnamon/desktop/keybindings/media-keys/video-rotation-lock"
-          value: "@as []"
-      tags: keyboard_shortcuts
-
-    - name: Enable custom keybindings schema in Cinnamon
-      dconf:
-        key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom-list"
-        value: "['custom0', 'custom1', 'custom2', 'custom3', 'custom5']"
-        state: present
+    - name: Configure Cinnamon media-key shortcuts with gsettings
+      shell: |
+        gsettings set org.cinnamon.desktop.keybindings.media-keys shutdown "['<Primary><Alt>Delete', 'XF86PowerOff']"
+        gsettings set org.cinnamon.desktop.keybindings.media-keys logout "['<Primary><Alt>End']"
+        gsettings set org.cinnamon.desktop.keybindings.media-keys terminal "['<Primary><Alt>t', '<Super>t']"
+        gsettings set org.cinnamon.desktop.keybindings.media-keys www "['<Primary><Alt>w', '<Super>w']"
+        gsettings set org.cinnamon.desktop.keybindings.media-keys screensaver "['<Primary><Alt>l', '<Super>l']"
+        gsettings set org.cinnamon.desktop.keybindings looking-glass-keybinding "[]"
+        gsettings set org.cinnamon.desktop.keybindings.media-keys video-rotation-lock "[]"
       become: false
       become_user: "{{ gui_user }}"
       environment:
@@ -257,60 +257,57 @@
         XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
       tags: keyboard_shortcuts
 
-    - name: Configure Cinnamon custom keyboard shortcuts
-      dconf:
-        key: "{{ item.key }}"
-        value: "{{ item.value }}"
-        state: present
-      become: false
-      become_user: "{{ gui_user }}"
-      environment:
-        DISPLAY: ":0"
-        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
-      loop:
+    - name: Configure custom keybindings with gsettings
+      shell: |
+        # Enable custom keybindings
+        gsettings set org.cinnamon.desktop.keybindings custom-list "['custom0', 'custom1', 'custom2', 'custom3', 'custom5']"
+        
         # KeepassXC shortcut
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/binding"
-          value: "['<Super>k', '<Primary><Alt>k']"
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/command"
-          value: "'keepassxc %f'"
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/name"
-          value: "'KeepassXC'"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/ binding "['<Super>k', '<Primary><Alt>k']"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/ command "keepassxc %f"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/ name "KeepassXC"
         
         # Text editor shortcut
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/binding"
-          value: "['<Super>n', '<Primary><Alt>n']"
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/command"
-          value: "'xed %U'"
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/name"
-          value: "'Text editor'"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/ binding "['<Super>n', '<Primary><Alt>n']"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/ command "xed %U"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/ name "Text editor"
         
         # VLC shortcut
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/binding"
-          value: "['<Primary><Alt>v', '<Super>v']"
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/command"
-          value: "'/usr/bin/vlc --started-from-file %U'"
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/name"
-          value: "'VLC'"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/ binding "['<Primary><Alt>v', '<Super>v']"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/ command "/usr/bin/vlc --started-from-file %U"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/ name "VLC"
         
         # Finamp shortcut
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/binding"
-          value: "['<Primary><Alt>f', '<Super>f']"
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/command"
-          value: "'/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=finamp com.unicornsonlsd.finamp'"
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/name"
-          value: "'Finamp'"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/ binding "['<Primary><Alt>f', '<Super>f']"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/ command "/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=finamp com.unicornsonlsd.finamp"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/ name "Finamp"
         
         # Obsidian shortcut
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/binding"
-          value: "['<Primary><Alt>o', '<Super>o']"
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/command"
-          value: "'/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=obsidian.sh --file-forwarding md.obsidian.Obsidian @@u %U @@'"
-        - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/name"
-          value: "'Obsidian'"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/ binding "['<Primary><Alt>o', '<Super>o']"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/ command "/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=obsidian.sh --file-forwarding md.obsidian.Obsidian @@u %U @@"
+        gsettings set org.cinnamon.desktop.keybindings.custom-keybinding:/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/ name "Obsidian"
+      become: false
+      become_user: "{{ gui_user }}"
+      environment:
+        DISPLAY: ":0"
+        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
       tags: keyboard_shortcuts
 
-    - name: Restart Cinnamon to apply all settings
+    - name: Restart Cinnamon and Nemo to apply all settings
       shell: |
+        # Kill all Nemo processes
+        pkill -f nemo || true
+        pkill -f nemo-desktop || true
+        sleep 1
+        
+        # Restart Nemo desktop
+        nohup nemo-desktop > /dev/null 2>&1 &
+        sleep 2
+        
+        # Gracefully restart Cinnamon
+        pkill -HUP cinnamon || true
+        sleep 2
+        # If that doesn't work, try a full restart
         pkill -f cinnamon || true
         sleep 2
         nohup cinnamon --replace > /dev/null 2>&1 &
@@ -320,8 +317,8 @@
       environment:
         DISPLAY: ":0"
         XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
-      when: ansible_env.XDG_CURRENT_DESKTOP == "X-Cinnamon" or ansible_env.XDG_CURRENT_DESKTOP is not defined
       tags: [keyboard_shortcuts, desktop_settings]
+      ignore_errors: yes
 
     #### CONFIG FILES ####
 
