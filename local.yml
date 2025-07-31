@@ -295,19 +295,13 @@
 
     - name: Restart Cinnamon and Nemo to apply all settings
       shell: |
-        # Kill all Nemo processes
         pkill -f nemo || true
         pkill -f nemo-desktop || true
         sleep 1
-        
-        # Restart Nemo desktop
         nohup nemo-desktop > /dev/null 2>&1 &
         sleep 2
-        
-        # Gracefully restart Cinnamon
         pkill -HUP cinnamon || true
         sleep 2
-        # If that doesn't work, try a full restart
         pkill -f cinnamon || true
         sleep 2
         nohup cinnamon --replace > /dev/null 2>&1 &
