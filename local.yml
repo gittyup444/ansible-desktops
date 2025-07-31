@@ -209,11 +209,8 @@
 
     - name: Reset Nemo folder view preferences to apply default list view
       shell: |
-        # Kill any running Nemo processes
         pkill -f nemo || true
-        # Remove cached folder view preferences so default applies
         rm -f /home/{{ gui_user }}/.config/nemo/desktop-metadata || true
-        # Clear gvfs metadata that stores per-folder view settings
         rm -rf /home/{{ gui_user }}/.local/share/gvfs-metadata || true
       become: false
       become_user: "{{ gui_user }}"
@@ -314,10 +311,8 @@
 
     - name: Restart Cinnamon to apply all settings
       shell: |
-        # Kill existing Cinnamon process
         pkill -f cinnamon || true
         sleep 2
-        # Restart Cinnamon
         nohup cinnamon --replace > /dev/null 2>&1 &
         sleep 3
       become: false
