@@ -63,7 +63,7 @@
 
   tasks:
 
-    #### APPLICATIONS ####
+    #### APT APPLICATIONS ####
 
     - name: Update and upgrade apt packages
       apt:
@@ -109,7 +109,7 @@
         state: present
       ignore_errors: yes
 
-    #### FLATPAK ####
+    #### FLATPAK APPLICATIONS ####
 
     - name: Ensure Flatpak is installed
       apt:
@@ -147,7 +147,7 @@
       register: flatpak_update_output
       changed_when: "'app/' in flatpak_update_output.stdout"
 
-    #### OS SETTINGS ####
+    #### OS SETTINGS AND CONFIG FILES ####
 
     - name: Copy wallpaper file
       copy:
@@ -156,7 +156,27 @@
         owner: root
         group: root
 
-#### DESKTOP & APPLICATION SETTINGS ####
+    - name: Copy config files (gracefully)
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode }}"
+      loop: "{{ files_to_copy }}"
+      loop_control:
+        label: "{{ item.src }}"
+      ignore_errors: yes
+
+    - name: Ensure symlink for SSH config is present
+      ansible.builtin.file:
+        src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/ssh/config
+        dest: /home/{{ gui_user }}/.ssh/config
+        state: link
+        force: true
+      ignore_errors: yes
+
+    #### DESKTOP & APPLICATION SETTINGS ####
 
     - name: Get user ID for XDG_RUNTIME_DIR
       shell: "id -u {{ gui_user }}"
@@ -203,7 +223,7 @@
 
           # Nemo list view settings
           [org/nemo/list-view]
-          default-zoom-level='standard'
+          default-zoom-level='smaller'
 
           # Text editor theme
           [org/x/editor/preferences/editor]
@@ -268,31 +288,31 @@
       tags: desktop_settings
       ignore_errors: yes
 
-    - name: Create script to restart desktop services
-      copy:
-        content: |
-          #!/bin/bash
-          export DISPLAY=:0
-          export XDG_RUNTIME_DIR="/run/user/$(id -u)"
-          pkill -f nemo-desktop || true
-          pkill -f cinnamon || true
-          sleep 2
-          nohup nemo-desktop > /dev/null 2>&1 &
-          sleep 1
-          nohup cinnamon --replace > /dev/null 2>&1 &
-        dest: /tmp/restart-desktop.sh
-        mode: '0755'
-      tags: desktop_settings
+#    - name: Create script to restart desktop services
+#      copy:
+#        content: |
+#          #!/bin/bash
+#          export DISPLAY=:0
+#          export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+#          pkill -f nemo-desktop || true
+#          pkill -f cinnamon || true
+#          sleep 2
+#          nohup nemo-desktop > /dev/null 2>&1 &
+#          sleep 1
+#          nohup cinnamon --replace > /dev/null 2>&1 &
+#        dest: /tmp/restart-desktop.sh
+#        mode: '0755'
+#      tags: desktop_settings
 
-    - name: Restart desktop services as user
-      shell: /tmp/restart-desktop.sh
-      become: false
-      become_user: "{{ gui_user }}"
-      tags: desktop_settings
-      ignore_errors: yes
+#    - name: Restart desktop services as user
+#      shell: /tmp/restart-desktop.sh
+#      become: false
+#      become_user: "{{ gui_user }}"
+#      tags: desktop_settings
+#      ignore_errors: yes
 
-    - name: Clean up restart script
-      file:
-        path: /tmp/restart-desktop.sh
-        state: absent
-      tags: desktop_settings
+#    - name: Clean up restart script
+#      file:
+#        path: /tmp/restart-desktop.sh
+#        state: absent
+#      tags: desktop_settings
