@@ -251,12 +251,12 @@
 
           [org/cinnamon/desktop/keybindings/custom-keybindings/custom1]
           binding=['<Super>n', '<Primary><Alt>n']
-          command='xed %U'
+          command='xed'
           name='Text editor'
 
           [org/cinnamon/desktop/keybindings/custom-keybindings/custom2]
           binding=['<Primary><Alt>v', '<Super>v']
-          command='/usr/bin/vlc --started-from-file %U'
+          command='/usr/bin/vlc'
           name='VLC'
 
           [org/cinnamon/desktop/keybindings/custom-keybindings/custom3]
