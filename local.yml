@@ -183,43 +183,6 @@
       register: gui_user_id
       changed_when: false
 
-    # First, let's check what schemas are actually available
-    - name: Check available gsettings schemas
-      shell: gsettings list-schemas | grep -E "(nemo|cinnamon)" | head -10
-      register: available_schemas
-      ignore_errors: yes
-
-    - name: Debug - Show available schemas
-      debug:
-        msg: "Available schemas: {{ available_schemas.stdout_lines }}"
-
-    - name: Check current Nemo settings before changes
-      shell: |
-        gsettings get org.nemo.preferences default-folder-viewer 2>/dev/null || echo "not found"
-        gsettings get org.nemo.desktop computer-icon-visible 2>/dev/null || echo "not found"
-      become: false
-      become_user: "{{ gui_user }}"
-      register: current_settings
-      ignore_errors: yes
-
-    - name: Debug - Show current settings
-      debug:
-        msg: "Current Nemo settings: {{ current_settings.stdout_lines }}"
-
-    # Clear any existing user overrides first
-    - name: Clear existing user dconf settings that might override system settings
-      shell: |
-        # Reset user dconf settings for Nemo
-        dconf reset -f /org/nemo/ || true
-        dconf reset -f /org/cinnamon/desktop/keybindings/ || true
-      become: false
-      become_user: "{{ gui_user }}"
-      environment:
-        DISPLAY: ":0"
-        XDG_RUNTIME_DIR: "/run/user/{{ gui_user_id.stdout }}"
-      tags: desktop_settings
-      ignore_errors: yes
-
     - name: Create system dconf profile directory
       file:
         path: /etc/dconf/profile
@@ -239,13 +202,6 @@
           system-db:local
         dest: /etc/dconf/profile/user
         mode: '0644'
-
-    # Set the DCONF_PROFILE environment variable system-wide
-    - name: Set DCONF_PROFILE environment variable in /etc/environment
-      lineinfile:
-        path: /etc/environment
-        line: 'DCONF_PROFILE=user'
-        create: yes
 
     - name: Create system-wide desktop settings
       copy:
@@ -332,37 +288,31 @@
       tags: desktop_settings
       ignore_errors: yes
 
-    # Alternative approach: Force settings using direct gsettings with proper environment
-    - name: Force Nemo settings with proper environment (fallback method)
-      shell: |
-        export DCONF_PROFILE=user
-        export DISPLAY=:0
-        export XDG_RUNTIME_DIR="/run/user/{{ gui_user_id.stdout }}"
-        
-        # Try to set settings directly
-        gsettings set org.nemo.desktop computer-icon-visible false || true
-        gsettings set org.nemo.desktop home-icon-visible false || true
-        gsettings set org.nemo.desktop network-icon-visible false || true
-        gsettings set org.nemo.desktop trash-icon-visible false || true
-        gsettings set org.nemo.desktop volumes-visible false || true
-        gsettings set org.nemo.preferences default-folder-viewer 'list-view' || true
-        gsettings set org.nemo.preferences default-view 'list-view' || true
-      become: false
-      become_user: "{{ gui_user }}"
-      tags: desktop_settings
-      ignore_errors: yes
+#    - name: Create script to restart desktop services
+#      copy:
+#        content: |
+#          #!/bin/bash
+#          export DISPLAY=:0
+#          export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+#          pkill -f nemo-desktop || true
+#          pkill -f cinnamon || true
+#          sleep 2
+#          nohup nemo-desktop > /dev/null 2>&1 &
+#          sleep 1
+#          nohup cinnamon --replace > /dev/null 2>&1 &
+#        dest: /tmp/restart-desktop.sh
+#        mode: '0755'
+#      tags: desktop_settings
 
-    - name: Verify settings after changes
-      shell: |
-        export DCONF_PROFILE=user
-        echo "=== After changes ==="
-        gsettings get org.nemo.preferences default-folder-viewer 2>/dev/null || echo "default-folder-viewer: not found"
-        gsettings get org.nemo.desktop computer-icon-visible 2>/dev/null || echo "computer-icon-visible: not found"
-      become: false
-      become_user: "{{ gui_user }}"
-      register: final_settings
-      ignore_errors: yes
+#    - name: Restart desktop services as user
+#      shell: /tmp/restart-desktop.sh
+#      become: false
+#      become_user: "{{ gui_user }}"
+#      tags: desktop_settings
+#      ignore_errors: yes
 
-    - name: Debug - Show final settings
-      debug:
-        msg: "Final Nemo settings: {{ final_settings.stdout_lines }}"
+#    - name: Clean up restart script
+#      file:
+#        path: /tmp/restart-desktop.sh
+#        state: absent
+#      tags: desktop_settings
