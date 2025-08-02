@@ -33,6 +33,20 @@
     - name: Update dconf database to apply removal
       command: dconf update
 
+    - name: Kill any running dconf processes to force reload
+      shell: |
+        pkill -f dconf-service || true
+        pkill -f dbus-daemon || true
+      ignore_errors: yes
+
+    - name: Clear user's dconf cache
+      shell: |
+        rm -rf /home/{{ gui_user }}/.cache/dconf || true
+        rm -rf /home/{{ gui_user }}/.config/dconf || true
+      become: false
+      become_user: "{{ gui_user }}"
+      ignore_errors: yes
+
     - name: Reset user dconf settings that were applied system-wide
       shell: |
         # Reset all the keys that were set in the system profile
