@@ -11,10 +11,10 @@ Step 3: `sudo ansible-pull -U https://github.com/gittyup444/ansible-desktops.git
   
 ### Or, use url shortcut (example user=jack):  
   
-Apt-repo apps: `sudo ansible-pull -U https://tinyurl.com/setupttnnb -e "gui_user=jack" local.yml`  
+Main playbook: `sudo ansible-pull -U https://tinyurl.com/setupttnnb -e "gui_user=jack" local.yml`  
   
 ### Alternatively, perform initial setup run using shell script (post syncthing setup):  
-initial setup: `Scripts/Config_backups/ansible/ansible-desktops/setup.sh`  
+Script for initial run: `Scripts/Config_backups/ansible/ansible-desktops/setup.sh`  
   
 ## To add changes to repo:  
 ```bash

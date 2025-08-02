@@ -9,43 +9,15 @@
         path: /etc/dconf/db/local.d/00-desktop-settings
         state: absent
 
-    - name: Remove system dconf profile
-      file:
-        path: /etc/dconf/profile/user
-        state: absent
+    - name: Create minimal safe dconf profile (don't delete it completely)
+      copy:
+        content: |
+          user-db:user
+        dest: /etc/dconf/profile/user
+        mode: '0644'
 
-    - name: Remove entire system dconf database directory
-      file:
-        path: /etc/dconf/db
-        state: absent
-      ignore_errors: yes
-
-    - name: Remove entire system dconf profile directory
-      file:
-        path: /etc/dconf/profile
-        state: absent
-      ignore_errors: yes
-
-    - name: Remove any dconf compiled databases
-      shell: rm -f /etc/dconf/db/local
-      ignore_errors: yes
-
-    - name: Update dconf database to apply removal
+    - name: Update dconf database to apply changes
       command: dconf update
-
-    - name: Kill any running dconf processes to force reload
-      shell: |
-        pkill -f dconf-service || true
-        pkill -f dbus-daemon || true
-      ignore_errors: yes
-
-    - name: Clear user's dconf cache
-      shell: |
-        rm -rf /home/{{ gui_user }}/.cache/dconf || true
-        rm -rf /home/{{ gui_user }}/.config/dconf || true
-      become: false
-      become_user: "{{ gui_user }}"
-      ignore_errors: yes
 
     - name: Reset user dconf settings that were applied system-wide
       shell: |
@@ -84,3 +56,10 @@
       become: false
       become_user: "{{ gui_user }}"
       ignore_errors: yes
+
+    - name: Display completion message
+      debug:
+        msg: |
+          Cleanup complete! The system dconf profile has been safely reset.
+          Please log out and log back in, then run your user-level playbook.
+          DO NOT DELETE /etc/dconf/profile/user - it's needed for the desktop environment.
