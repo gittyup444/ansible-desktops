@@ -1,7 +1,9 @@
 ---
 - hosts: localhost
   connection: local
-  become: true
+  # No become at playbook level - we'll use it per task as needed
+  vars:
+    ansible_become_password: "{{ vault_become_password }}"
 
   vars:
     files_to_copy:
@@ -70,11 +72,13 @@
         upgrade: yes
         update_cache: yes
         cache_valid_time: 86400
+      become: true
 
     - name: Ensure required dependencies for .deb files are installed
       ansible.builtin.apt:
         name: gdebi-core
         state: present
+      become: true
 
     - name: Install all apt packages (gracefully)
       package:
@@ -108,6 +112,7 @@
           - yt-dlp
         state: present
       ignore_errors: yes
+      become: true
 
     #### FLATPAK APPLICATIONS ####
 
@@ -116,11 +121,13 @@
         name: flatpak
         state: present
         update_cache: yes
+      become: true
 
     - name: Add Flathub remote repository if not present
       command: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
       args:
         creates: /var/lib/flatpak/repo/flathub
+      become: true
 
     - name: Install Flatpak applications
       flatpak:
@@ -141,11 +148,13 @@
         - com.github.iwalton3.jellyfin-media-player
         - com.unicornsonlsd.finamp
         - org.telegram.desktop
+      become: true
 
     - name: Upgrade all flatpaks 📅
       ansible.builtin.command: flatpak update --noninteractive
       register: flatpak_update_output
       changed_when: "'app/' in flatpak_update_output.stdout"
+      become: true
 
     #### OS SETTINGS AND CONFIG FILES ####
 
@@ -155,6 +164,7 @@
         dest: /usr/share/backgrounds/ansible-wallpaper.jpg
         owner: root
         group: root
+      become: true
 
     - name: Copy config files (gracefully)
       copy:
@@ -167,6 +177,7 @@
       loop_control:
         label: "{{ item.src }}"
       ignore_errors: yes
+      become: true
 
     - name: Ensure symlink for SSH config is present
       ansible.builtin.file:
@@ -175,4 +186,123 @@
         state: link
         force: true
       ignore_errors: yes
+      become: true
 
+    #### USER DESKTOP SETTINGS (run as regular user) ####
+
+    - name: Set Nemo desktop icons preferences
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/nemo/desktop/computer-icon-visible", value: "false" }
+        - { key: "/org/nemo/desktop/home-icon-visible", value: "false" }
+        - { key: "/org/nemo/desktop/network-icon-visible", value: "false" }
+        - { key: "/org/nemo/desktop/trash-icon-visible", value: "false" }
+        - { key: "/org/nemo/desktop/volumes-visible", value: "false" }
+      # No become - run as regular user
+
+    - name: Set Nemo file browser defaults
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/nemo/preferences/default-folder-viewer", value: "'list-view'" }
+        - { key: "/org/nemo/preferences/default-view", value: "'list-view'" }
+        - { key: "/org/nemo/preferences/default-sort-order", value: "'name'" }
+        - { key: "/org/nemo/preferences/default-sort-in-reverse", value: "false" }
+      # No become - run as regular user
+
+    - name: Set Nemo list view settings
+      dconf:
+        key: "/org/nemo/list-view/default-zoom-level"
+        value: "'smaller'"
+      # No become - run as regular user
+
+    - name: Set text editor theme
+      dconf:
+        key: "/org/x/editor/preferences/editor/scheme"
+        value: "'oblivion'"
+      # No become - run as regular user
+
+    - name: Set Cinnamon media key bindings
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/media-keys/shutdown", value: "['<Primary><Alt>Delete', 'XF86PowerOff']" }
+        - { key: "/org/cinnamon/desktop/keybindings/media-keys/logout", value: "['<Primary><Alt>End']" }
+        - { key: "/org/cinnamon/desktop/keybindings/media-keys/terminal", value: "['<Primary><Alt>t', '<Super>t']" }
+        - { key: "/org/cinnamon/desktop/keybindings/media-keys/www", value: "['<Primary><Alt>w', '<Super>w']" }
+        - { key: "/org/cinnamon/desktop/keybindings/media-keys/screensaver", value: "['<Primary><Alt>l', '<Super>l']" }
+        - { key: "/org/cinnamon/desktop/keybindings/media-keys/video-rotation-lock", value: "@as []" }
+      # No become - run as regular user
+
+    - name: Disable looking glass keybinding
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/looking-glass-keybinding", value: "@as []" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-list", value: "['custom0', 'custom1', 'custom2', 'custom3', 'custom5']" }
+      # No become - run as regular user
+
+    - name: Set custom keybinding - KeepassXC
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/binding", value: "['<Super>k', '<Primary><Alt>k']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/command", value: "'keepassxc %f'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/name", value: "'KeepassXC'" }
+      # No become - run as regular user
+
+    - name: Set custom keybinding - Text editor
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/binding", value: "['<Super>n', '<Primary><Alt>n']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/command", value: "'xed'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/name", value: "'Text editor'" }
+      # No become - run as regular user
+
+    - name: Set custom keybinding - VLC
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/binding", value: "['<Primary><Alt>v', '<Super>v']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/command", value: "'/usr/bin/vlc'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/name", value: "'VLC'" }
+      # No become - run as regular user
+
+    - name: Set custom keybinding - Finamp
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/binding", value: "['<Primary><Alt>f', '<Super>f']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/command", value: "'/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=finamp com.unicornsonlsd.finamp'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/name", value: "'Finamp'" }
+      # No become - run as regular user
+
+    - name: Set custom keybinding - Obsidian
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/binding", value: "['<Primary><Alt>o', '<Super>o']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/command", value: "'/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=obsidian.sh --file-forwarding md.obsidian.Obsidian @@u %U @@'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/name", value: "'Obsidian'" }
+      # No become - run as regular user
+
+    - name: Reset Nemo folder view preferences to apply default list view
+      shell: |
+        pkill -f nemo || true
+        sleep 1
+        rm -f ~/.config/nemo/desktop-metadata || true
+        rm -rf ~/.local/share/gvfs-metadata || true
+        rm -rf ~/.cache/nemo || true
+      ignore_errors: yes
+      # No become - run as regular user
