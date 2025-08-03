@@ -1,13 +1,9 @@
 ---
 - hosts: localhost
   connection: local
-  # No become at playbook level - we'll use it per task as needed
-  vars:
-    ansible_become_password: "{{ vault_become_password }}"
-  vars_files:
-    - group_vars/all/vault.yml
 
   vars:
+    ansible_become_password: "{{ vault_become_password }}"
     files_to_copy:
         # autostart files 
         # NOTE: THESE FILES ARE USER-AGNOSTIC BUT REQUIRE SYNCTHING DIR "Scripts" to be present.
