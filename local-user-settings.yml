@@ -69,7 +69,7 @@
         key: "{{ item.key }}"
         value: "{{ item.value }}"
       loop:
-        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/binding", value: "['<Super>n', '<Primary><Alt>n']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/binding", value: "['<Primary><Alt>n']" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/command", value: "'xed'" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/name", value: "'Text editor'" }
 
