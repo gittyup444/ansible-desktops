@@ -4,6 +4,8 @@
   # No become at playbook level - we'll use it per task as needed
   vars:
     ansible_become_password: "{{ vault_become_password }}"
+  vars_files:
+    - group_vars/all/vault.yml
 
   vars:
     files_to_copy:
