@@ -53,7 +53,7 @@
         value: "{{ item.value }}"
       loop:
         - { key: "/org/cinnamon/desktop/keybindings/looking-glass-keybinding", value: "@as []" }
-        - { key: "/org/cinnamon/desktop/keybindings/custom-list", value: "['custom0', 'custom1', 'custom2', 'custom3', 'custom5']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-list", value: "['custom0', 'custom1', 'custom2', 'custom3', 'custom4', 'custom5']" }
 
     - name: Set custom keybinding - KeepassXC
       dconf:
@@ -90,6 +90,15 @@
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/binding", value: "['<Primary><Alt>f', '<Super>f']" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/command", value: "'/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=finamp com.unicornsonlsd.finamp'" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/name", value: "'Finamp'" }
+
+    - name: Set custom keybinding - BleachBit
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom4/binding", value: "['<Super>b', '<Primary><Alt>b']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom4/command", value: "'bleachbit'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom4/name", value: "'BleachBit'" }
 
     - name: Set custom keybinding - Obsidian
       dconf:
