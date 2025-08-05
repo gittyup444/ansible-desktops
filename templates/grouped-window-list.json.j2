@@ -1,0 +1,366 @@
+{
+    "layout": {
+        "type": "layout",
+        "pages": [
+            "generalPage",
+            "panelPage",
+            "thumbnailsPage",
+            "contextMenuPage"
+        ],
+        "generalPage": {
+            "type": "page",
+            "title": "General",
+            "sections": [
+                "generalSection",
+                "hotKeysSection"
+            ]
+        },
+        "panelPage": {
+            "type": "page",
+            "title": "Panel",
+            "sections": [
+                "appButtonsSection"
+            ]
+        },
+        "thumbnailsPage": {
+            "type": "page",
+            "title": "Thumbnails",
+            "sections": [
+                "thumbnailsSection",
+                "hoverPeekSection"
+            ]
+        },
+        "contextMenuPage": {
+            "type": "page",
+            "title": "Context Menu",
+            "sections": [
+                "contextMenuSection"
+            ]
+        },
+        "generalSection": {
+            "type": "section",
+            "title": "Behavior",
+            "keys": [
+                "group-apps",
+                "scroll-behavior",
+                "left-click-action",
+                "middle-click-action",
+                "show-all-workspaces",
+                "window-display-settings"
+            ]
+        },
+        "hotKeysSection": {
+            "type": "section",
+            "title": "Hot Keys",
+            "keys": [
+                "cycleMenusHotkey",
+                "show-apps-order-hotkey",
+                "show-apps-order-timeout",
+                "super-num-hotkeys"
+            ]
+        },
+        "appButtonsSection": {
+            "type": "section",
+            "title": "Application Buttons",
+            "keys": [
+                "title-display",
+                "launcher-animation-effect",
+                "number-display",
+                "enable-app-button-dragging"
+            ]
+        },
+        "thumbnailsSection": {
+            "type": "section",
+            "title": "Thumbnails",
+            "keys": [
+                "thumbnail-scroll-behavior",
+                "show-thumbnails",
+                "animate-thumbnails",
+                "vertical-thumbnails",
+                "sort-thumbnails",
+                "highlight-last-focused-thumbnail",
+                "onclick-thumbnails",
+                "thumbnail-timeout",
+                "thumbnail-size"
+            ]
+        },
+        "hoverPeekSection": {
+            "type": "section",
+            "title": "Hover Peek",
+            "keys": [
+                "enable-hover-peek",
+                "hover-peek-time-in",
+                "hover-peek-time-out",
+                "hover-peek-opacity"
+            ]
+        },
+        "contextMenuSection": {
+            "type": "section",
+            "title": "",
+            "keys": [
+                "show-recent",
+                "autostart-menu-item",
+                "monitor-move-all-windows"
+            ]
+        }
+    },
+    "group-apps": {
+        "type": "checkbox",
+        "default": true,
+        "description": "Group windows by application",
+        "value": {{ cinnamon_group_apps | default(true) | lower }}
+    },
+    "scroll-behavior": {
+        "type": "combobox",
+        "default": 1,
+        "description": "Mouse wheel scroll action",
+        "options": {
+            "None": 1,
+            "Cycle apps": 2,
+            "Cycle windows": 3
+        },
+        "value": {{ cinnamon_scroll_behavior | default(1) }}
+    },
+    "left-click-action": {
+        "type": "combobox",
+        "default": 2,
+        "description": "Left click action",
+        "options": {
+            "None": 1,
+            "Toggle activation of last focused window": 2,
+            "Cycle windows": 3
+        },
+        "value": {{ cinnamon_left_click_action | default(2) }}
+    },
+    "middle-click-action": {
+        "type": "combobox",
+        "default": 3,
+        "description": "Middle click action",
+        "options": {
+            "None": 1,
+            "Launch new app instance": 2,
+            "Close last focused window in group": 3
+        },
+        "value": {{ cinnamon_middle_click_action | default(3) }}
+    },
+    "show-all-workspaces": {
+        "type": "checkbox",
+        "default": false,
+        "description": "Show windows from all workspaces",
+        "value": {{ cinnamon_show_all_workspaces | default(false) | lower }}
+    },
+    "window-display-settings": {
+        "type": "combobox",
+        "default": 1,
+        "description": "Show windows from other monitors",
+        "options": {
+            "Only from monitors without a window list": 1,
+            "From all monitors": 2
+        },
+        "value": {{ cinnamon_window_display_settings | default(1) }}
+    },
+    "cycleMenusHotkey": {
+        "type": "keybinding",
+        "default": "",
+        "description": "Global hotkey for cycling through thumbnail menus",
+        "value": "{{ cinnamon_cycle_menus_hotkey | default('') }}"
+    },
+    "show-apps-order-hotkey": {
+        "type": "keybinding",
+        "default": "<Super>grave",
+        "description": "Global hotkey to show the order of apps",
+        "value": "{{ cinnamon_show_apps_order_hotkey | default('<Super>grave') }}"
+    },
+    "show-apps-order-timeout": {
+        "type": "spinbutton",
+        "default": 2500,
+        "min": 100,
+        "max": 10000,
+        "step": 10,
+        "units": "milliseconds",
+        "description": "Duration of the apps order display on hotkey press",
+        "value": {{ cinnamon_show_apps_order_timeout | default(2500) }}
+    },
+    "super-num-hotkeys": {
+        "type": "checkbox",
+        "default": true,
+        "description": "Enable Super+<number> shortcut to switch/open apps",
+        "value": {{ cinnamon_super_num_hotkeys | default(true) | lower }}
+    },
+    "title-display": {
+        "type": "combobox",
+        "default": 1,
+        "description": "Button label",
+        "options": {
+            "None": 1,
+            "Application name": 2,
+            "Window title": 3,
+            "Window title (only for the focused window)": 4
+        },
+        "value": {{ cinnamon_title_display | default(1) }}
+    },
+    "launcher-animation-effect": {
+        "type": "combobox",
+        "default": 3,
+        "description": "Launcher animation",
+        "options": {
+            "None": 1,
+            "Fade": 2,
+            "Scale": 3
+        },
+        "value": {{ cinnamon_launcher_animation_effect | default(3) }}
+    },
+    "number-display": {
+        "type": "checkbox",
+        "default": true,
+        "description": "Show window count numbers",
+        "value": {{ cinnamon_number_display | default(true) | lower }}
+    },
+    "enable-app-button-dragging": {
+        "type": "checkbox",
+        "default": true,
+        "description": "Enable app button dragging",
+        "value": {{ cinnamon_enable_app_button_dragging | default(true) | lower }}
+    },
+    "thumbnail-scroll-behavior": {
+        "type": "checkbox",
+        "default": false,
+        "description": "Cycle windows on mouse wheel scroll",
+        "value": {{ cinnamon_thumbnail_scroll_behavior | default(false) | lower }}
+    },
+    "show-thumbnails": {
+        "type": "checkbox",
+        "default": true,
+        "description": "Show thumbnails",
+        "value": {{ cinnamon_show_thumbnails | default(true) | lower }}
+    },
+    "animate-thumbnails": {
+        "type": "checkbox",
+        "default": false,
+        "description": "Animate thumbnails",
+        "value": {{ cinnamon_animate_thumbnails | default(false) | lower }}
+    },
+    "vertical-thumbnails": {
+        "type": "checkbox",
+        "default": false,
+        "description": "Enable vertical thumbnails",
+        "value": {{ cinnamon_vertical_thumbnails | default(false) | lower }}
+    },
+    "sort-thumbnails": {
+        "type": "checkbox",
+        "default": false,
+        "description": "Sort thumbnails according to the last focused windows",
+        "value": {{ cinnamon_sort_thumbnails | default(false) | lower }}
+    },
+    "highlight-last-focused-thumbnail": {
+        "type": "checkbox",
+        "default": true,
+        "description": "Highlight the thumbnail of the last focused window",
+        "value": {{ cinnamon_highlight_last_focused_thumbnail | default(true) | lower }}
+    },
+    "onclick-thumbnails": {
+        "type": "checkbox",
+        "default": false,
+        "description": "Click to show thumbnails",
+        "value": {{ cinnamon_onclick_thumbnails | default(false) | lower }}
+    },
+    "thumbnail-timeout": {
+        "dependency": "!onclick-thumbnails",
+        "type": "combobox",
+        "default": 250,
+        "description": "Delay before showing thumbnails",
+        "options": {
+            "50 ms": 50,
+            "250 ms": 250,
+            "500 ms": 500
+        },
+        "value": {{ cinnamon_thumbnail_timeout | default(250) }}
+    },
+    "thumbnail-size": {
+        "type": "combobox",
+        "default": 6,
+        "description": "Thumbnail size",
+        "options": {
+            "Small": 3,
+            "Medium": 6,
+            "Large": 9,
+            "Largest": 12
+        },
+        "value": {{ cinnamon_thumbnail_size | default(6) }}
+    },
+    "enable-hover-peek": {
+        "type": "checkbox",
+        "default": true,
+        "description": "Show the window when hovering its thumbnail",
+        "value": {{ cinnamon_enable_hover_peek | default(true) | lower }}
+    },
+    "hover-peek-time-in": {
+        "dependency": "enable-hover-peek",
+        "type": "combobox",
+        "default": 300,
+        "description": "Window fade-in time",
+        "options": {
+            "150 ms": 150,
+            "300 ms": 300,
+            "450 ms": 450
+        },
+        "value": {{ cinnamon_hover_peek_time_in | default(300) }}
+    },
+    "hover-peek-time-out": {
+        "dependency": "enable-hover-peek",
+        "type": "combobox",
+        "default": 0,
+        "description": "Window fade-out time",
+        "options": {
+            "None": 0,
+            "150 ms": 150,
+            "300 ms": 300,
+            "450 ms": 450
+        },
+        "value": {{ cinnamon_hover_peek_time_out | default(0) }}
+    },
+    "hover-peek-opacity": {
+        "dependency": "enable-hover-peek",
+        "type": "spinbutton",
+        "default": 100,
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "units": "percent",
+        "description": "Window opacity",
+        "value": {{ cinnamon_hover_peek_opacity | default(100) }}
+    },
+    "show-recent": {
+        "type": "checkbox",
+        "default": true,
+        "description": "Show recent items",
+        "value": {{ cinnamon_show_recent | default(true) | lower }}
+    },
+    "autostart-menu-item": {
+        "type": "checkbox",
+        "default": false,
+        "description": "Show autostart option",
+        "value": {{ cinnamon_autostart_menu_item | default(false) | lower }}
+    },
+    "monitor-move-all-windows": {
+        "type": "checkbox",
+        "default": true,
+        "description": "Apply the monitor move option to all windows",
+        "tooltip": "When clicking \"Move to monitor\" in the context menu, this option will move all of an app's windows instead of just the last focused window from the app.",
+        "value": {{ cinnamon_monitor_move_all_windows | default(true) | lower }}
+    },
+    "pinned-apps": {
+        "type": "generic",
+        "default": [
+            "nemo.desktop",
+            "firefox.desktop",
+            "org.gnome.Terminal.desktop"
+        ],
+        "value": [
+{% for app in cinnamon_pinned_apps %}
+            "{{ app }}"{% if not loop.last %},{% endif %}
+{% endfor %}
+        ]
+    },
+    "__md5__": "{{ ansible_date_time.epoch | hash('md5') }}"
+}
