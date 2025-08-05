@@ -1,5 +1,6 @@
 ---
 - name: Configure Cinnamon grouped-window-list settings
+  hosts: localhost
   become: no
   gather_facts: yes  # Needed for ansible_date_time and ansible_env
   
