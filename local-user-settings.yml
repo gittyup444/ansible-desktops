@@ -1,7 +1,25 @@
 ---
 - hosts: localhost
   connection: local
+  gather_facts: yes  # Needed for ansible_date_time and ansible_env
+  name: Configure cinnamon settings
   # NO become: true - run as regular user
+
+  vars:
+    # Default pinned apps - override in group_vars/host_vars as needed
+    cinnamon_pinned_apps:
+      - "firefox.desktop"
+      - "org.keepassxc.KeePassXC.desktop"
+      - "com.unicornsonlsd.finamp.desktop:flatpak"
+      - "md.obsidian.Obsidian.desktop:flatpak"
+      - "org.x.editor.desktop"
+    
+    # Show application names on taskbar buttons
+    cinnamon_title_display: 2
+    
+    # Optional: customize other settings if needed
+    # cinnamon_show_thumbnails: true
+    # cinnamon_thumbnail_size: 6
 
   tasks:
     - name: Set Nemo desktop icons preferences
@@ -117,3 +135,20 @@
         rm -rf ~/.local/share/gvfs-metadata || true
         rm -rf ~/.cache/nemo || true
       ignore_errors: yes
+
+    - name: Ensure Cinnamon spice config directory exists
+      file:
+        path: "/home/{{ gui_user }}/.config/cinnamon/spices/grouped-window-list@cinnamon.org"
+        state: directory
+        mode: '0755'
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+    
+    - name: Configure Cinnamon grouped-window-list settings
+      template:
+        src: templates/grouped-window-list.json.j2
+        dest: "/home/{{ gui_user }}/.config/cinnamon/spices/grouped-window-list@cinnamon.org/2.json"
+        backup: yes
+        mode: '0644'
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
