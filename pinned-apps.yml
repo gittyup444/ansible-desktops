@@ -1,6 +1,7 @@
 ---
 - name: Configure Cinnamon grouped-window-list settings
   hosts: localhost
+  connection: local
   become: no
   gather_facts: yes  # Needed for ansible_date_time and ansible_env
   
@@ -20,24 +21,31 @@
   tasks:
     - name: Ensure Cinnamon spice config directory exists
       file:
-        path: "{{ ansible_env.HOME }}/.config/cinnamon/spices/grouped-window-list@cinnamon.org"
+        path: "/home/{{ gui_user }}/.config/cinnamon/spices/grouped-window-list@cinnamon.org"
         state: directory
         mode: '0755'
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
     
     - name: Configure Cinnamon grouped-window-list settings
       template:
         src: templates/grouped-window-list.json.j2
-        dest: "{{ ansible_env.HOME }}/.config/cinnamon/spices/grouped-window-list@cinnamon.org/2.json"
+        dest: "/home/{{ gui_user }}/.config/cinnamon/spices/grouped-window-list@cinnamon.org/2.json"
         backup: yes
         mode: '0644'
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
       notify: restart cinnamon
       
   handlers:
     - name: restart cinnamon
       shell: |
-        # Kill existing cinnamon process gracefully
-        if pgrep -x "cinnamon" > /dev/null; then
-          nohup bash -c 'sleep 2 && cinnamon --replace' > /dev/null 2>&1 &
-        fi
+        # Restart cinnamon for the GUI user
+        sudo -u {{ gui_user }} bash -c '
+          export DISPLAY=:0
+          if pgrep -x "cinnamon" > /dev/null; then
+            nohup cinnamon --replace > /dev/null 2>&1 &
+          fi
+        '
       async: 10
       poll: 0
