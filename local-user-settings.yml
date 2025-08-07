@@ -72,8 +72,8 @@
         key: "{{ item.key }}"
         value: "{{ item.value }}"
       loop:
-        - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/default-size-columns", value: "90" }
-        - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/default-size-rows", value: "23" }
+        - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/default-size-columns", value: "94" }
+        - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/default-size-rows", value: "22" }
         - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/font", value: "'Monospace 13'" }
         - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/use-system-font", value: "false" }
 
