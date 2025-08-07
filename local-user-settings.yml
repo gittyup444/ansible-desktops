@@ -16,10 +16,14 @@
     
     # Show application names on taskbar buttons
     cinnamon_title_display: 2
-    
     # Optional: customize other settings if needed
     # cinnamon_show_thumbnails: true
     # cinnamon_thumbnail_size: 6
+
+    # Terminal profile settings
+    terminal_profile_id: "b1dcc9dd-5262-4d8d-a863-c897e6d979b9"
+    # to extract any terminal settings set by user:
+    # dconf dump /org/gnome/terminal/legacy/profiles:/ > terminal-settings.dconf && cat terminal-settings.dconf
 
   tasks:
     - name: Set Nemo desktop icons preferences
@@ -52,6 +56,26 @@
       dconf:
         key: "/org/x/editor/preferences/editor/scheme"
         value: "'oblivion'"
+
+    - name: Set GNOME Terminal profile list
+      dconf:
+        key: "/org/gnome/terminal/legacy/profiles:/list"
+        value: "['{{ terminal_profile_id }}']"
+
+    - name: Set GNOME Terminal default profile
+      dconf:
+        key: "/org/gnome/terminal/legacy/profiles:/default"
+        value: "'{{ terminal_profile_id }}'"
+
+    - name: Configure GNOME Terminal profile settings
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/default-size-columns", value: "90" }
+        - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/default-size-rows", value: "28" }
+        - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/font", value: "'Monospace 13'" }
+        - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/use-system-font", value: "false" }
 
     - name: Set Cinnamon media key bindings
       dconf:
