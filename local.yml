@@ -67,6 +67,10 @@
         dest: /home/{{ gui_user }}/.config/remmina
       - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/local/share/remmina
         dest: /home/{{ gui_user }}/.local/share/remmina
+      - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/config/puddletag
+        dest: /home/{{ gui_user }}/.local/config/puddletag
+      - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/local/share/puddletag
+        dest: /home/{{ gui_user }}/.local/share/puddletag
 
   tasks:
 
