@@ -160,6 +160,18 @@
         rm -rf ~/.cache/nemo || true
       ignore_errors: yes
 
+    - name: Configure Cinnamon night light settings
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/settings-daemon/plugins/color/night-light-enabled", value: "true" }
+        - { key: "/org/cinnamon/settings-daemon/plugins/color/night-light-last-coordinates", value: "(51.302999999999997, -0.073099999999999998)" }
+        - { key: "/org/cinnamon/settings-daemon/plugins/color/night-light-schedule-from", value: "20.0" }
+        - { key: "/org/cinnamon/settings-daemon/plugins/color/night-light-schedule-mode", value: "'auto'" }
+        - { key: "/org/cinnamon/settings-daemon/plugins/color/night-light-schedule-to", value: "6.0" }
+        - { key: "/org/cinnamon/settings-daemon/plugins/color/night-light-temperature", value: "uint32 2700" }
+
     - name: Ensure Cinnamon spice config directory exists
       file:
         path: "/home/{{ gui_user }}/.config/cinnamon/spices/grouped-window-list@cinnamon.org"
