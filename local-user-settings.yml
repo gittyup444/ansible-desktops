@@ -151,10 +151,8 @@
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/command", value: "'/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=obsidian.sh --file-forwarding md.obsidian.Obsidian @@u %U @@'" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/name", value: "'Obsidian'" }
 
-    - name: Reset Nemo folder view preferences to apply default list view
+    - name: Clear Nemo cache files (without killing process)
       shell: |
-        pkill -f nemo || true
-        sleep 1
         rm -f ~/.config/nemo/desktop-metadata || true
         rm -rf ~/.local/share/gvfs-metadata || true
         rm -rf ~/.cache/nemo || true
