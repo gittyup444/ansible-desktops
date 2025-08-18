@@ -1,0 +1,219 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    files_to_copy:
+        # autostart files 
+        # NOTE: THESE FILES ARE USER-AGNOSTIC BUT REQUIRE SYNCTHING DIR "Scripts" to be present.
+      - src: files/home/config/autostart/configs-backup-script.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/configs-backup-script.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+      - src: files/home/config/autostart/ansible-pull-updater.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/ansible-pull-updater.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+      - src: files/home/config/autostart/com.nextcloud.desktopclient.nextcloud.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/com.nextcloud.desktopclient.nextcloud.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+      - src: files/home/config/autostart/syncthing-start.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/syncthing-start.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+        # menu entry files
+        # NOTE: THESE FILES ARE USER-AGNOSTIC BUT REQUIRE SYNCTHING DIRS "Scripts" and "PortableApps" to be present.
+      - src: files/home/local/share/applications/ansible-pull-manual-update.desktop
+        dest: /home/{{ gui_user }}/.local/share/applications/ansible-pull-manual-update.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+      - src: files/home/local/share/applications/config-backup-manual-run.desktop
+        dest: /home/{{ gui_user }}/.local/share/applications/config-backup-manual-run.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+      - src: files/home/local/share/applications/veracrypt.desktop
+        dest: /home/{{ gui_user }}/.local/share/applications/veracrypt.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+        # config files
+      - src: files/home/config/bleachbit/bleachbit.ini
+        dest: /home/{{ gui_user }}/.config/bleachbit/bleachbit.ini
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0664"
+      - src: files/home/config/gtk-3.0/bookmarks
+        dest: /home/{{ gui_user }}/.config/gtk-3.0/bookmarks
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0664"
+
+    # Separate list for directories that need synchronization
+    directories_to_sync:
+      - src: files/home/config/vlc
+        dest: /home/{{ gui_user }}/.config/vlc
+      - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/config/remmina
+        dest: /home/{{ gui_user }}/.config/remmina
+      - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/local/share/remmina
+        dest: /home/{{ gui_user }}/.local/share/remmina
+      - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/config/puddletag
+        dest: /home/{{ gui_user }}/.config/puddletag
+      - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/local/share/puddletag
+        dest: /home/{{ gui_user }}/.local/share/puddletag
+
+  tasks:
+
+    #### APT APPLICATIONS ####
+
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400
+
+    - name: Ensure required dependencies for .deb files are installed
+      ansible.builtin.apt:
+        name: gdebi-core
+        state: present
+
+    - name: Install all apt packages (gracefully)
+      package:
+        name:
+          - baobab
+          - bleachbit
+          - curl
+          - gdebi-core
+          - gnome-disk-utility
+          - gparted
+          - grsync
+          - hardinfo
+          - htop
+          - keepassxc
+          - nextcloud-desktop
+          - openssh-server
+          - pdfarranger
+          - remmina
+          - sqlitebrowser
+          - syncthing
+          - tlp
+          - tree
+          - tmux
+          - audacity
+          - drawing
+          - calibre
+          - puddletag
+          - rhythmbox
+          - soundconverter
+          - vlc
+          - yt-dlp
+        state: present
+      ignore_errors: yes
+
+    #### FLATPAK APPLICATIONS ####
+
+    - name: Ensure Flatpak is installed
+      apt:
+        name: flatpak
+        state: present
+        update_cache: yes
+
+    - name: Add Flathub remote repository if not present
+      command: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+      args:
+        creates: /var/lib/flatpak/repo/flathub
+
+    - name: Install Flatpak applications
+      flatpak:
+        name: "{{ item }}"
+        state: present
+        remote: flathub
+      loop:
+        - com.brave.Browser
+        - org.chromium.Chromium
+        - vn.hoabinh.quan.CoBang # qr code scanner and reader
+        - org.signal.Signal
+        - com.github.PintaProject.Pinta
+        - md.obsidian.Obsidian
+        - org.freefilesync.FreeFileSync
+        - com.system76.Popsicle # usb image flasher
+        - com.vscodium.codium
+        - tv.plex.PlexDesktop
+        - com.github.iwalton3.jellyfin-media-player
+        - com.unicornsonlsd.finamp
+        - org.telegram.desktop
+
+    - name: Upgrade all flatpaks 📅
+      ansible.builtin.command: flatpak update --noninteractive
+      register: flatpak_update_output
+      changed_when: "'app/' in flatpak_update_output.stdout"
+
+    #### OS SETTINGS AND CONFIG FILES ####
+
+    - name: Copy wallpaper file
+      copy:
+        src: files/wallpapers/pblache_colors.jpg
+        dest: /usr/share/backgrounds/ansible-wallpaper.jpg
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure destination directories exist
+      file:
+        path: "{{ item.dest | dirname }}"
+        state: directory
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0755"
+      loop: "{{ files_to_copy }}"
+      ignore_errors: yes
+
+    - name: Synchronise config files
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode }}"
+      loop: "{{ files_to_copy }}"
+      loop_control:
+        label: "{{ item.src }}"
+      ignore_errors: yes
+
+    - name: Synchronise directories
+      synchronize:
+        src: "{{ item.src }}/"
+        dest: "{{ item.dest }}/"
+        delete: yes
+        recursive: yes
+        owner: no
+        group: no
+      loop: "{{ directories_to_sync }}"
+      delegate_to: "{{ inventory_hostname }}"
+      ignore_errors: yes
+
+    - name: Set proper ownership for synced directories
+      file:
+        path: "{{ item.dest }}"
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        recurse: yes
+      loop: "{{ directories_to_sync }}"
+      ignore_errors: yes
+
+    - name: Ensure symlink for SSH config is present
+      ansible.builtin.file:
+        src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/ssh/config
+        dest: /home/{{ gui_user }}/.ssh/config
+        state: link
+        force: true
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+      ignore_errors: yes

@@ -1,0 +1,298 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: yes  # Needed for ansible_date_time and ansible_env
+  name: Configure cinnamon settings
+  # NO become: true - run as regular user
+
+  vars:
+    # Default pinned apps - override in group_vars/host_vars as needed
+    cinnamon_pinned_apps:
+      - "firefox.desktop"
+      - "org.keepassxc.KeePassXC.desktop"
+      - "com.unicornsonlsd.finamp.desktop:flatpak"
+      - "md.obsidian.Obsidian.desktop:flatpak"
+      - "org.x.editor.desktop"
+    
+    # Show application names on taskbar buttons
+    cinnamon_title_display: 2
+    # Optional: customize other settings if needed
+    # cinnamon_show_thumbnails: true
+    # cinnamon_thumbnail_size: 6
+
+    # Terminal profile settings
+    terminal_profile_id: "b1dcc9dd-5262-4d8d-a863-c897e6d979b9"
+    # to extract any terminal settings set by user:
+    # dconf dump /org/gnome/terminal/legacy/profiles:/ > terminal-settings.dconf && cat terminal-settings.dconf
+
+    files_to_copy:
+        # autostart files 
+        # NOTE: THESE FILES ARE USER-AGNOSTIC BUT REQUIRE SYNCTHING DIR "Scripts" to be present.
+      - src: files/home/config/autostart/configs-backup-script.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/configs-backup-script.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+      - src: files/home/config/autostart/ansible-pull-updater.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/ansible-pull-updater.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+      - src: files/home/config/autostart/com.nextcloud.desktopclient.nextcloud.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/com.nextcloud.desktopclient.nextcloud.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+      - src: files/home/config/autostart/syncthing-start.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/syncthing-start.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+        # menu entry files
+        # NOTE: THESE FILES ARE USER-AGNOSTIC BUT REQUIRE SYNCTHING DIRS "Scripts" and "PortableApps" to be present.
+      - src: files/home/local/share/applications/ansible-pull-manual-update.desktop
+        dest: /home/{{ gui_user }}/.local/share/applications/ansible-pull-manual-update.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+      - src: files/home/local/share/applications/config-backup-manual-run.desktop
+        dest: /home/{{ gui_user }}/.local/share/applications/config-backup-manual-run.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+      - src: files/home/local/share/applications/veracrypt.desktop
+        dest: /home/{{ gui_user }}/.local/share/applications/veracrypt.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
+        # config files
+      - src: files/home/config/bleachbit/bleachbit.ini
+        dest: /home/{{ gui_user }}/.config/bleachbit/bleachbit.ini
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0664"
+      - src: files/home/config/gtk-3.0/bookmarks
+        dest: /home/{{ gui_user }}/.config/gtk-3.0/bookmarks
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0664"
+
+    # Separate list for directories that need synchronization
+    directories_to_sync:
+      - src: files/home/config/vlc
+        dest: /home/{{ gui_user }}/.config/vlc
+      - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/config/remmina
+        dest: /home/{{ gui_user }}/.config/remmina
+      - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/local/share/remmina
+        dest: /home/{{ gui_user }}/.local/share/remmina
+      - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/config/puddletag
+        dest: /home/{{ gui_user }}/.config/puddletag
+      - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/local/share/puddletag
+        dest: /home/{{ gui_user }}/.local/share/puddletag
+
+
+  tasks:
+    - name: Ensure destination directories exist
+      file:
+        path: "{{ item.dest | dirname }}"
+        state: directory
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0755"
+      loop: "{{ files_to_copy }}"
+      ignore_errors: yes
+
+    - name: Synchronise config files
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode }}"
+      loop: "{{ files_to_copy }}"
+      loop_control:
+        label: "{{ item.src }}"
+      ignore_errors: yes
+
+    - name: Synchronise directories
+      synchronize:
+        src: "{{ item.src }}/"
+        dest: "{{ item.dest }}/"
+        delete: yes
+        recursive: yes
+        owner: no
+        group: no
+      loop: "{{ directories_to_sync }}"
+      delegate_to: "{{ inventory_hostname }}"
+      ignore_errors: yes
+
+    - name: Set proper ownership for synced directories
+      file:
+        path: "{{ item.dest }}"
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        recurse: yes
+      loop: "{{ directories_to_sync }}"
+      ignore_errors: yes
+
+    - name: Ensure Cinnamon spice config directory exists
+      file:
+        path: "/home/{{ gui_user }}/.config/cinnamon/spices/grouped-window-list@cinnamon.org"
+        state: directory
+        mode: '0755'
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+    
+    - name: Configure Cinnamon grouped-window-list settings
+      template:
+        src: templates/grouped-window-list.json.j2
+        dest: "/home/{{ gui_user }}/.config/cinnamon/spices/grouped-window-list@cinnamon.org/2.json"
+        backup: yes
+        mode: '0644'
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+
+    - name: Set Nemo desktop icons preferences
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/nemo/desktop/computer-icon-visible", value: "false" }
+        - { key: "/org/nemo/desktop/home-icon-visible", value: "false" }
+        - { key: "/org/nemo/desktop/network-icon-visible", value: "false" }
+        - { key: "/org/nemo/desktop/trash-icon-visible", value: "false" }
+        - { key: "/org/nemo/desktop/volumes-visible", value: "false" }
+
+    - name: Set Nemo file browser defaults
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/nemo/preferences/default-folder-viewer", value: "'list-view'" }
+        - { key: "/org/nemo/preferences/default-view", value: "'list-view'" }
+        - { key: "/org/nemo/preferences/default-sort-order", value: "'name'" }
+        - { key: "/org/nemo/preferences/default-sort-in-reverse", value: "false" }
+
+    - name: Set Nemo list view settings
+      dconf:
+        key: "/org/nemo/list-view/default-zoom-level"
+        value: "'smaller'"
+
+    - name: Set text editor theme
+      dconf:
+        key: "/org/x/editor/preferences/editor/scheme"
+        value: "'oblivion'"
+
+    - name: Set GNOME Terminal profile list
+      dconf:
+        key: "/org/gnome/terminal/legacy/profiles:/list"
+        value: "['{{ terminal_profile_id }}']"
+
+    - name: Set GNOME Terminal default profile
+      dconf:
+        key: "/org/gnome/terminal/legacy/profiles:/default"
+        value: "'{{ terminal_profile_id }}'"
+
+    - name: Configure GNOME Terminal profile settings
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/default-size-columns", value: "94" }
+        - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/default-size-rows", value: "22" }
+        - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/font", value: "'Monospace 13'" }
+        - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/use-system-font", value: "false" }
+
+    - name: Set Cinnamon media key bindings
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/media-keys/shutdown", value: "['<Primary><Alt>Delete', 'XF86PowerOff']" }
+        - { key: "/org/cinnamon/desktop/keybindings/media-keys/logout", value: "['<Primary><Alt>End']" }
+        - { key: "/org/cinnamon/desktop/keybindings/media-keys/terminal", value: "['<Primary><Alt>t', '<Super>t']" }
+        - { key: "/org/cinnamon/desktop/keybindings/media-keys/www", value: "['<Primary><Alt>w', '<Super>w']" }
+        - { key: "/org/cinnamon/desktop/keybindings/media-keys/screensaver", value: "['<Primary><Alt>l', '<Super>l']" }
+        - { key: "/org/cinnamon/desktop/keybindings/media-keys/video-rotation-lock", value: "@as []" }
+
+    - name: Disable looking glass keybinding
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/looking-glass-keybinding", value: "@as []" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-list", value: "['custom0', 'custom1', 'custom2', 'custom3', 'custom4', 'custom5']" }
+
+    - name: Set custom keybinding - KeepassXC
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/binding", value: "['<Super>k', '<Primary><Alt>k']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/command", value: "'keepassxc %f'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/name", value: "'KeepassXC'" }
+
+    - name: Set custom keybinding - Text editor
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/binding", value: "['<Primary><Alt>n']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/command", value: "'xed'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/name", value: "'Text editor'" }
+
+    - name: Set custom keybinding - VLC
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/binding", value: "['<Primary><Alt>v', '<Super>v']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/command", value: "'/usr/bin/vlc'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/name", value: "'VLC'" }
+
+    - name: Set custom keybinding - Finamp
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/binding", value: "['<Primary><Alt>f', '<Super>f']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/command", value: "'/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=finamp com.unicornsonlsd.finamp'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/name", value: "'Finamp'" }
+
+    - name: Set custom keybinding - BleachBit
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom4/binding", value: "['<Super>b', '<Primary><Alt>b']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom4/command", value: "'bleachbit'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom4/name", value: "'BleachBit'" }
+
+    - name: Set custom keybinding - Obsidian
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/binding", value: "['<Primary><Alt>o', '<Super>o']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/command", value: "'/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=obsidian.sh --file-forwarding md.obsidian.Obsidian @@u %U @@'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/name", value: "'Obsidian'" }
+
+    - name: Clear Nemo cache files (without killing process)
+      shell: |
+        rm -f ~/.config/nemo/desktop-metadata || true
+        rm -rf ~/.local/share/gvfs-metadata || true
+        rm -rf ~/.cache/nemo || true
+      ignore_errors: yes
+
+    - name: Configure Cinnamon night light settings
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/settings-daemon/plugins/color/night-light-enabled", value: "true" }
+        - { key: "/org/cinnamon/settings-daemon/plugins/color/night-light-last-coordinates", value: "(51.302999999999997, -0.073099999999999998)" }
+        - { key: "/org/cinnamon/settings-daemon/plugins/color/night-light-schedule-from", value: "20.0" }
+        - { key: "/org/cinnamon/settings-daemon/plugins/color/night-light-schedule-mode", value: "'auto'" }
+        - { key: "/org/cinnamon/settings-daemon/plugins/color/night-light-schedule-to", value: "6.0" }
+        - { key: "/org/cinnamon/settings-daemon/plugins/color/night-light-temperature", value: "uint32 2700" }
+
