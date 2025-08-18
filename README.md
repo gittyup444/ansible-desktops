@@ -7,11 +7,11 @@ Step 1: `sudo apt install ansible git syncthing`
   
 Step 2: `ssh-keygen` # generate dummy keypair to create .ssh with correct permissions
   
-Step 3: `sudo ansible-pull -U https://github.com/gittyup444/ansible-desktops.git -e "gui_user=jack" local.yml`  
+Step 3: `sudo ansible-pull -U https://github.com/gittyup444/ansible-desktops.git -e "gui_user=jack" desktop-apps.yml`  
   
 ### Or, use url shortcut (example user=jack):  
   
-Main playbook: `sudo ansible-pull -U https://tinyurl.com/setupttnnb -e "gui_user=jack" local.yml`  
+Main playbook: `sudo ansible-pull -U https://tinyurl.com/setupttnnb -e "gui_user=jack" desktop-apps.yml`  
   
 ### Alternatively, perform initial setup run using shell script (post syncthing setup):  
 Script for initial run: `Scripts/Config_backups/ansible/ansible-desktops/setup.sh`  
