@@ -92,6 +92,16 @@
 
 
   tasks:
+    - name: Ensure symlink for SSH config is present
+      ansible.builtin.file:
+        src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/ssh/config
+        dest: /home/{{ gui_user }}/.ssh/config
+        state: link
+        force: true
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+      ignore_errors: yes
+
     - name: Ensure destination directories exist
       file:
         path: "{{ item.dest | dirname }}"
