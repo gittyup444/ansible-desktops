@@ -89,10 +89,12 @@
         dest: /home/{{ gui_user }}/.config/puddletag
       - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/local/share/puddletag
         dest: /home/{{ gui_user }}/.local/share/puddletag
+      - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/config/calibre
+        dest: /home/{{ gui_user }}/.config/calibre
 
 
   tasks:
-    - name: Ensure symlink for SSH config is present
+    - name: SSH tasks - ensure symlink for SSH config is present
       ansible.builtin.file:
         src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/ssh/config
         dest: /home/{{ gui_user }}/.ssh/config
@@ -102,7 +104,7 @@
         group: "{{ gui_user }}"
       ignore_errors: yes
 
-    - name: Ensure destination directories exist
+    - name: File-specific tasks - ensure required destination directories exist
       file:
         path: "{{ item.dest | dirname }}"
         state: directory
@@ -112,7 +114,7 @@
       loop: "{{ files_to_copy }}"
       ignore_errors: yes
 
-    - name: Synchronise config files
+    - name: File-specific tasks - copy relevant config files to destination directories
       copy:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
@@ -124,11 +126,11 @@
         label: "{{ item.src }}"
       ignore_errors: yes
 
-    - name: Synchronise directories
+    - name: Directory-level tasks - synchronise target directories
       synchronize:
         src: "{{ item.src }}/"
         dest: "{{ item.dest }}/"
-        delete: yes
+        delete: no
         recursive: yes
         owner: no
         group: no
@@ -136,7 +138,7 @@
       delegate_to: "{{ inventory_hostname }}"
       ignore_errors: yes
 
-    - name: Set proper ownership for synced directories
+    - name: Directory-level tasks - set ownership for synced directories
       file:
         path: "{{ item.dest }}"
         owner: "{{ gui_user }}"
@@ -145,7 +147,7 @@
       loop: "{{ directories_to_sync }}"
       ignore_errors: yes
 
-    - name: Ensure Cinnamon spice config directory exists
+    - name: Cinnamon settings - ensure Cinnamon spice config directory exists
       file:
         path: "/home/{{ gui_user }}/.config/cinnamon/spices/grouped-window-list@cinnamon.org"
         state: directory
@@ -153,7 +155,7 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
     
-    - name: Configure Cinnamon grouped-window-list settings
+    - name: Cinnamon settings - configure Cinnamon grouped-window-list settings
       template:
         src: templates/grouped-window-list.json.j2
         dest: "/home/{{ gui_user }}/.config/cinnamon/spices/grouped-window-list@cinnamon.org/2.json"
@@ -162,7 +164,7 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
 
-    - name: Set Nemo desktop icons preferences
+    - name: Cinnamon settings - set Nemo desktop icons preferences
       dconf:
         key: "{{ item.key }}"
         value: "{{ item.value }}"
@@ -173,7 +175,7 @@
         - { key: "/org/nemo/desktop/trash-icon-visible", value: "false" }
         - { key: "/org/nemo/desktop/volumes-visible", value: "false" }
 
-    - name: Set Nemo file browser defaults
+    - name: Cinnamon settings - set Nemo file browser defaults
       dconf:
         key: "{{ item.key }}"
         value: "{{ item.value }}"
@@ -183,27 +185,27 @@
         - { key: "/org/nemo/preferences/default-sort-order", value: "'name'" }
         - { key: "/org/nemo/preferences/default-sort-in-reverse", value: "false" }
 
-    - name: Set Nemo list view settings
+    - name: Cinnamon settings - set Nemo list view settings
       dconf:
         key: "/org/nemo/list-view/default-zoom-level"
         value: "'smaller'"
 
-    - name: Set text editor theme
+    - name: Cinnamon settings - set text editor theme
       dconf:
         key: "/org/x/editor/preferences/editor/scheme"
         value: "'oblivion'"
 
-    - name: Set GNOME Terminal profile list
+    - name: Cinnamon settings - set GNOME Terminal profile list
       dconf:
         key: "/org/gnome/terminal/legacy/profiles:/list"
         value: "['{{ terminal_profile_id }}']"
 
-    - name: Set GNOME Terminal default profile
+    - name: Cinnamon settings - set GNOME Terminal default profile
       dconf:
         key: "/org/gnome/terminal/legacy/profiles:/default"
         value: "'{{ terminal_profile_id }}'"
 
-    - name: Configure GNOME Terminal profile settings
+    - name: Cinnamon settings - configure GNOME Terminal profile settings
       dconf:
         key: "{{ item.key }}"
         value: "{{ item.value }}"
@@ -213,7 +215,7 @@
         - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/font", value: "'Monospace 13'" }
         - { key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal_profile_id }}/use-system-font", value: "false" }
 
-    - name: Set Cinnamon media key bindings
+    - name: Cinnamon settings - set Cinnamon media key bindings
       dconf:
         key: "{{ item.key }}"
         value: "{{ item.value }}"
@@ -225,7 +227,7 @@
         - { key: "/org/cinnamon/desktop/keybindings/media-keys/screensaver", value: "['<Primary><Alt>l', '<Super>l']" }
         - { key: "/org/cinnamon/desktop/keybindings/media-keys/video-rotation-lock", value: "@as []" }
 
-    - name: Disable looking glass keybinding
+    - name: Cinnamon settings - disable looking glass keybinding
       dconf:
         key: "{{ item.key }}"
         value: "{{ item.value }}"
@@ -233,7 +235,7 @@
         - { key: "/org/cinnamon/desktop/keybindings/looking-glass-keybinding", value: "@as []" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-list", value: "['custom0', 'custom1', 'custom2', 'custom3', 'custom4', 'custom5']" }
 
-    - name: Set custom keybinding - KeepassXC
+    - name: Cinnamon settings - set custom keybinding - KeepassXC
       dconf:
         key: "{{ item.key }}"
         value: "{{ item.value }}"
@@ -242,7 +244,7 @@
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/command", value: "'keepassxc %f'" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/name", value: "'KeepassXC'" }
 
-    - name: Set custom keybinding - Text editor
+    - name: Cinnamon settings - set custom keybinding - Text editor
       dconf:
         key: "{{ item.key }}"
         value: "{{ item.value }}"
@@ -251,7 +253,7 @@
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/command", value: "'xed'" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/name", value: "'Text editor'" }
 
-    - name: Set custom keybinding - VLC
+    - name: Cinnamon settings - set custom keybinding - VLC
       dconf:
         key: "{{ item.key }}"
         value: "{{ item.value }}"
@@ -260,7 +262,7 @@
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/command", value: "'/usr/bin/vlc'" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom2/name", value: "'VLC'" }
 
-    - name: Set custom keybinding - Finamp
+    - name: Cinnamon settings - set custom keybinding - Finamp
       dconf:
         key: "{{ item.key }}"
         value: "{{ item.value }}"
@@ -269,7 +271,7 @@
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/command", value: "'/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=finamp com.unicornsonlsd.finamp'" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom3/name", value: "'Finamp'" }
 
-    - name: Set custom keybinding - BleachBit
+    - name: Cinnamon settings - set custom keybinding - BleachBit
       dconf:
         key: "{{ item.key }}"
         value: "{{ item.value }}"
@@ -278,7 +280,7 @@
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom4/command", value: "'bleachbit'" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom4/name", value: "'BleachBit'" }
 
-    - name: Set custom keybinding - Obsidian
+    - name: Cinnamon settings - set custom keybinding - Obsidian
       dconf:
         key: "{{ item.key }}"
         value: "{{ item.value }}"
@@ -287,14 +289,14 @@
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/command", value: "'/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=obsidian.sh --file-forwarding md.obsidian.Obsidian @@u %U @@'" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/name", value: "'Obsidian'" }
 
-    - name: Clear Nemo cache files (without killing process)
+    - name: Cinnamon settings - clear Nemo cache files (without killing process)
       shell: |
         rm -f ~/.config/nemo/desktop-metadata || true
         rm -rf ~/.local/share/gvfs-metadata || true
         rm -rf ~/.cache/nemo || true
       ignore_errors: yes
 
-    - name: Configure Cinnamon night light settings
+    - name: Cinnamon settings - configure Cinnamon night light settings
       dconf:
         key: "{{ item.key }}"
         value: "{{ item.value }}"
