@@ -24,6 +24,7 @@
           - baobab
           - bleachbit
           - curl
+          - duf
           - gdebi-core
           - gnome-disk-utility
           - gparted
