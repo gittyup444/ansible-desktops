@@ -45,6 +45,8 @@
           - drawing
           - calibre
           - puddletag
+          - python3-venv
+          - python3-pip
           - rhythmbox
           - soundconverter
           - vlc
