@@ -76,6 +76,11 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0664"
+      - src: files/home/tmux.conf
+        dest: /home/{{ gui_user }}/.tmux.conf
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0664"
 
     # Separate list for directories that need synchronization
     directories_to_sync:
