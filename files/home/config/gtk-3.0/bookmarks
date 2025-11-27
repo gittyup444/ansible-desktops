@@ -7,8 +7,8 @@ file:///home/jack/Sync
 file:///home/jack/Nextcloud
 file:///home/jack/Scripts
 file:///home/jack/Music/Music%20Downloads
-sftp://srv/home/donkey24 srv /home
-sftp://srv/home/donkey24/Downloads srv /downloads
+sftp://srv-sftp/home/donkey24 srv /home
+sftp://srv-sftp/home/donkey24/Downloads srv /downloads
 sftp://nas/data nas /data
 sftp://nas/data2 nas /data2
 sftp://cctv/home/donkey24 cctv /home
