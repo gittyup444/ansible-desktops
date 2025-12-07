@@ -32,6 +32,7 @@
           - hardinfo
           - htop
           - keepassxc
+          - ncdu
           - nextcloud-desktop
           - openssh-server
           - pdfarranger
