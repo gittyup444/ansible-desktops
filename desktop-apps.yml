@@ -112,7 +112,7 @@
     #### CONDA ENV ####
     - name: Sync Conda environment from requirements file
       community.general.conda:
-        name: my_env
+        name: myenv
         state: present
         container: /home/{{ ansible_user }}/miniconda3  # Path to your conda install
         file: files/conda/conda_env.yml"
