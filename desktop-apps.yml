@@ -112,7 +112,8 @@
         /home/{{ gui_user }}/miniconda3/bin/conda env update \
         --name myenv \
         --file {{ playbook_dir }}/files/conda/conda_env.yml \
-        --prune \
-        --yes
+        --override-channels \
+        -c conda-forge \
+        --prune
       register: conda_out
       changed_when: "'All requested packages already installed' not in conda_out.stdout"
