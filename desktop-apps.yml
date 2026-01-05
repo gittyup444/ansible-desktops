@@ -105,15 +105,16 @@
 
     #### CONDA ENV ####
 
-    - name: Sync Conda environment from requirements file (Bulletproof)
+    - name: Sync Conda environment from requirements file (Final Version)
       become: true
       become_user: "{{ gui_user }}"
       shell: |
         /home/{{ gui_user }}/miniconda3/bin/conda env update \
         --name myenv \
         --file {{ playbook_dir }}/files/conda/conda_env.yml \
-        --override-channels \
-        -c conda-forge \
         --prune
       register: conda_out
-      changed_when: "'All requested packages already installed' not in conda_out.stdout"
+      # Checks if packages were actually changed to provide correct Ansible status
+      changed_when: 
+        - "'All requested packages already installed' not in conda_out.stdout"
+        - "'Retrieving notices' in conda_out.stdout or 'Downloading and Extracting Packages' in conda_out.stdout"
