@@ -1,12 +1,11 @@
-# conda_env.yml
-name: my_env
+name: myenv
 channels:
   - conda-forge
-  - defaults
+  - nodefaults
 dependencies:
   - python=3.10
   - pandas
   - jupyter
   - scikit-learn
-  - matplotlib
   - selenium
+  - pip

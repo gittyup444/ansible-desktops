@@ -105,24 +105,14 @@
 
     #### CONDA ENV ####
 
-    - name: Accept Anaconda Terms of Service (Non-interactive)
+    - name: Sync Conda environment from requirements file (Bulletproof)
       become: true
       become_user: "{{ gui_user }}"
-      shell: |
-        /home/{{ gui_user }}/miniconda3/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
-        /home/{{ gui_user }}/miniconda3/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
-      register: tos_accept
-      changed_when: "'Terms of Service accepted' in tos_accept.stdout"
-      ignore_errors: yes
-
-    - name: Sync Conda environment from requirements file (Bulletproof)
       shell: |
         /home/{{ gui_user }}/miniconda3/bin/conda env update \
         --name myenv \
         --file {{ playbook_dir }}/files/conda/conda_env.yml \
-        --prune
+        --prune \
+        --yes
       register: conda_out
-      # This logic prevents Ansible from saying "Changed" if nothing actually happened
       changed_when: "'All requested packages already installed' not in conda_out.stdout"
-      # This prevents the whole playbook from failing if one desktop doesn't have conda yet
-      ignore_errors: yes
