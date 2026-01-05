@@ -114,7 +114,7 @@
       community.general.conda:
         name: myenv
         state: present
-        container: /home/{{ ansible_user }}/miniconda3  # Path to your conda install
-        file: files/conda/conda_env.yml"
-        executable: /home/{{ ansible_user }}/miniconda3/bin/conda
+        container: "/home/{{ gui_user }}/miniconda3"
+        file: "{{ playbook_dir }}/files/conda/conda_env.yml"
+        executable: "/home/{{ gui_user }}/miniconda3/bin/conda"
 
