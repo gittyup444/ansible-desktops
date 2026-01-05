@@ -3,6 +3,12 @@
   connection: local
   become: true
 
+  pre_tasks:
+   - name: Ensure community.general collection is installed
+     shell: "ansible-galaxy collection install community.general"
+     register: galaxy_output
+     changed_when: "'nothing to do' not in galaxy_output.stdout"
+
   tasks:
 
     #### APT APPLICATIONS ####
