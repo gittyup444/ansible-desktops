@@ -3,6 +3,10 @@
   connection: local
   become: true
 
+  # Tells Ansible to look in community.general for the 'conda' module
+  collections:
+    - community.general
+
   pre_tasks:
     - name: Ensure community.general collection is installed
       shell: "ansible-galaxy collection install community.general"
@@ -82,12 +86,12 @@
       loop:
         - com.brave.Browser
         - org.chromium.Chromium
-        - vn.hoabinh.quan.CoBang 
+        - vn.hoabinh.quan.CoBang
         - org.signal.Signal
         - com.github.PintaProject.Pinta
         - md.obsidian.Obsidian
         - org.freefilesync.FreeFileSync
-        - com.system76.Popsicle 
+        - com.system76.Popsicle
         - com.vscodium.codium
         - tv.plex.PlexDesktop
         - com.github.iwalton3.jellyfin-media-player
@@ -112,7 +116,7 @@
     #### CONDA ENV ####
 
     - name: Sync Conda environment from requirements file
-      community.general.conda:
+      conda:
         name: myenv
         state: present
         container: "/home/{{ gui_user }}/miniconda3"
