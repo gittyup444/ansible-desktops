@@ -109,5 +109,12 @@
         group: root
         mode: "0644"
 
-
+    #### CONDA ENV ####
+    - name: Sync Conda environment from requirements file
+      community.general.conda:
+        name: my_env
+        state: present
+        container: /home/{{ ansible_user }}/miniconda3  # Path to your conda install
+        file: files/conda/conda_env.yml"
+        executable: /home/{{ ansible_user }}/miniconda3/bin/conda
 
