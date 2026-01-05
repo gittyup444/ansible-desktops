@@ -82,12 +82,12 @@
       loop:
         - com.brave.Browser
         - org.chromium.Chromium
-        - vn.hoabinh.quan.CoBang # qr code scanner and reader
+        - vn.hoabinh.quan.CoBang 
         - org.signal.Signal
         - com.github.PintaProject.Pinta
         - md.obsidian.Obsidian
         - org.freefilesync.FreeFileSync
-        - com.system76.Popsicle # usb image flasher
+        - com.system76.Popsicle 
         - com.vscodium.codium
         - tv.plex.PlexDesktop
         - com.github.iwalton3.jellyfin-media-player
@@ -110,6 +110,7 @@
         mode: "0644"
 
     #### CONDA ENV ####
+
     - name: Sync Conda environment from requirements file
       community.general.conda:
         name: myenv
@@ -117,4 +118,3 @@
         container: "/home/{{ gui_user }}/miniconda3"
         file: "{{ playbook_dir }}/files/conda/conda_env.yml"
         executable: "/home/{{ gui_user }}/miniconda3/bin/conda"
-
