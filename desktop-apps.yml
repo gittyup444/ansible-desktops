@@ -76,7 +76,7 @@
       loop:
         - com.brave.Browser
         - org.chromium.Chromium
-        - vn.hoabinh.quan.CoBang
+        - vn.hoabinh.quan.CoBang # qr code scanner and creator
         - org.signal.Signal
         - com.github.PintaProject.Pinta
         - md.obsidian.Obsidian
@@ -87,6 +87,7 @@
         - com.github.iwalton3.jellyfin-media-player
         - com.unicornsonlsd.finamp
         - org.telegram.desktop
+        - com.github.tenderowl.frog # text extraction from screenshots
 
     - name: Upgrade all flatpaks 📅
       ansible.builtin.command: flatpak update --noninteractive
