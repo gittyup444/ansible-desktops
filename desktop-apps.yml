@@ -50,6 +50,7 @@
           - python3-pip
           - rhythmbox
           - soundconverter
+          - transmission-cli
           - vlc
           - yt-dlp
         state: present
