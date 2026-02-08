@@ -86,7 +86,7 @@
         - com.vscodium.codium
         - tv.plex.PlexDesktop
         - com.github.iwalton3.jellyfin-media-player
-        - com.unicornsonlsd.finamp
+        - io.github.dweymouth.supersonic
         - org.telegram.desktop
         - com.github.tenderowl.frog # text extraction from screenshots
 

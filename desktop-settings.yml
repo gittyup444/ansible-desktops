@@ -10,7 +10,7 @@
     cinnamon_pinned_apps:
       - "firefox.desktop"
       - "org.keepassxc.KeePassXC.desktop"
-      - "com.unicornsonlsd.finamp.desktop:flatpak"
+      - "io.github.dweymouth.supersonic:flatpak"
       - "md.obsidian.Obsidian.desktop:flatpak"
       - "org.x.editor.desktop"
     
