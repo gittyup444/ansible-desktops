@@ -89,6 +89,7 @@
         - io.github.dweymouth.supersonic
         - org.telegram.desktop
         - com.github.tenderowl.frog # text extraction from screenshots
+        - be.alexandervanhee.gradia # screenshot editing and annotation
 
     - name: Upgrade all flatpaks 📅
       ansible.builtin.command: flatpak update --noninteractive
