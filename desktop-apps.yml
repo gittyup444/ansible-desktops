@@ -92,6 +92,7 @@
         - com.github.tenderowl.frog # text extraction from screenshots
         - be.alexandervanhee.gradia # screenshot editing and annotation
         - sa.sy.bluerecorder # simple screen recorder
+        - com.github.unrud.RemoteTouchpad # web server tool which enables android as touchpad
 
     - name: Upgrade all flatpaks 📅
       ansible.builtin.command: flatpak update --noninteractive
