@@ -27,6 +27,7 @@
           - duf
           - gdebi-core
           - gnome-disk-utility
+          - golang-go # go language
           - gparted
           - grsync
           - hardinfo
