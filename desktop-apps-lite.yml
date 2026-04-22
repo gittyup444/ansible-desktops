@@ -1,0 +1,111 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+
+    #### APT APPLICATIONS ####
+
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400
+
+    - name: Ensure required dependencies for .deb files are installed
+      ansible.builtin.apt:
+        name: gdebi-core
+        state: present
+
+    - name: Install all apt packages (gracefully)
+      package:
+        name:
+          - baobab
+          - bleachbit
+          - curl
+          - duf
+          - gdebi-core
+          - gnome-disk-utility
+          - golang-go # go language
+          - gparted
+          - grsync
+          - hardinfo
+          - htop
+          - keepassxc
+          - ncdu
+          - nextcloud-desktop
+          - obs-studio
+          - openssh-server
+          - pdfarranger
+          - remmina
+          - sqlitebrowser
+          - syncthing
+          - tlp
+          - tree
+          - tmux
+          - audacity
+          - drawing
+          - calibre
+          - puddletag
+          - python3-venv
+          - python3-pip
+          - rhythmbox
+          - soundconverter
+          - transmission-cli
+          - vlc
+          - yt-dlp
+        state: present
+      ignore_errors: yes
+
+    #### FLATPAK APPLICATIONS ####
+
+    - name: Ensure Flatpak is installed
+      apt:
+        name: flatpak
+        state: present
+        update_cache: yes
+
+    - name: Add Flathub remote repository if not present
+      command: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+      args:
+        creates: /var/lib/flatpak/repo/flathub
+
+    - name: Install Flatpak applications
+      flatpak:
+        name: "{{ item }}"
+        state: present
+        remote: flathub
+      loop:
+        - com.brave.Browser
+        - org.chromium.Chromium
+        - vn.hoabinh.quan.CoBang # qr code scanner and creator
+        - org.signal.Signal
+        - com.github.PintaProject.Pinta # paint app
+        - md.obsidian.Obsidian
+        - org.freefilesync.FreeFileSync
+        - com.system76.Popsicle # usb creation tool
+        - com.vscodium.codium
+        - tv.plex.PlexDesktop
+        - com.github.iwalton3.jellyfin-media-player
+        - io.github.dweymouth.supersonic # subsonic client player
+        - org.telegram.desktop
+        - com.github.tenderowl.frog # text extraction from screenshots
+        - be.alexandervanhee.gradia # screenshot editing and annotation
+        - sa.sy.bluerecorder # simple screen recorder
+        - com.github.unrud.RemoteTouchpad # web server tool which enables android as touchpad
+
+    - name: Upgrade all flatpaks 📅
+      ansible.builtin.command: flatpak update --noninteractive
+      register: flatpak_update_output
+      changed_when: "'app/' in flatpak_update_output.stdout"
+
+    #### OS FILES ####
+
+    - name: Copy wallpaper file
+      copy:
+        src: files/wallpapers/pblache_colors.jpg
+        dest: /usr/share/backgrounds/ansible-wallpaper.jpg
+        owner: root
+        group: root
+        mode: "0644"
