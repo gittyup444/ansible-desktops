@@ -90,6 +90,7 @@
         - com.github.iwalton3.jellyfin-media-player
         - io.github.dweymouth.supersonic # subsonic client player
         - org.telegram.desktop
+        - com.sublimehq.SublimeText
         - com.github.tenderowl.frog # text extraction from screenshots
         - be.alexandervanhee.gradia # screenshot editing and annotation
         - sa.sy.bluerecorder # simple screen recorder
