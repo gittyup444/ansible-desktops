@@ -12,8 +12,8 @@
       - "org.keepassxc.KeePassXC.desktop"
       - "io.github.dweymouth.supersonic.desktop:flatpak"
       - "md.obsidian.Obsidian.desktop:flatpak"
-      - "org.x.editor.desktop"
-    
+      - "com.sublimehq.SublimeText.desktop:flatpak"
+
     # Show application names on taskbar buttons
     cinnamon_title_display: 2
     # Optional: customize other settings if needed
@@ -255,8 +255,8 @@
         value: "{{ item.value }}"
       loop:
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/binding", value: "['<Primary><Alt>n']" }
-        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/command", value: "'xed'" }
-        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/name", value: "'Text editor'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/command", value: "'/usr/bin/flatpak run com.sublimehq.SublimeText'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/name", value: "'Sublime Text'" }
 
     - name: Cinnamon settings - set custom keybinding - VLC
       dconf:
