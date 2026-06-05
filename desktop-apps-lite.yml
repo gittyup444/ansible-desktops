@@ -34,8 +34,7 @@
           - htop
           - keepassxc
           - ncdu
-          - nextcloud-desktop
-          - obs-studio
+          #- nextcloud-desktop
           - openssh-server
           - pdfarranger
           - remmina
@@ -77,19 +76,15 @@
         state: present
         remote: flathub
       loop:
-        - com.brave.Browser
         - org.chromium.Chromium
         - vn.hoabinh.quan.CoBang # qr code scanner and creator
         - org.signal.Signal
         - com.github.PintaProject.Pinta # paint app
         - md.obsidian.Obsidian
+        - com.unicornsonlsd.finamp # jellyfin client
         - org.freefilesync.FreeFileSync
         - com.system76.Popsicle # usb creation tool
-        - com.vscodium.codium
-        - tv.plex.PlexDesktop
-        - com.github.iwalton3.jellyfin-media-player
         - io.github.dweymouth.supersonic # subsonic client player
-        - org.telegram.desktop
         - com.github.tenderowl.frog # text extraction from screenshots
         - be.alexandervanhee.gradia # screenshot editing and annotation
         - sa.sy.bluerecorder # simple screen recorder

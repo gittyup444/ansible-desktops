@@ -49,6 +49,11 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0644"
+      - src: files/home/local/share/applications/config-backup-manual-run.desktop
+        dest: /home/{{ gui_user }}/.local/share/applications/config-backup-manual-run.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
       - src: files/home/local/share/applications/veracrypt.desktop
         dest: /home/{{ gui_user }}/.local/share/applications/veracrypt.desktop
         owner: "{{ gui_user }}"
@@ -57,6 +62,12 @@
         # config files
       - src: files/home/config/bleachbit/bleachbit.ini
         dest: /home/{{ gui_user }}/.config/bleachbit/bleachbit.ini
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0664"
+        # NOTE: this is user-specific
+      - src: files/home/config/gtk-3.0/bookmarks-jenny
+        dest: /home/{{ gui_user }}/.config/gtk-3.0/bookmarks
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0664"
@@ -263,6 +274,15 @@
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom4/binding", value: "['<Super>b', '<Primary><Alt>b']" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom4/command", value: "'bleachbit'" }
         - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom4/name", value: "'BleachBit'" }
+
+    - name: Cinnamon settings - set custom keybinding - Obsidian
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/binding", value: "['<Primary><Alt>o', '<Super>o']" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/command", value: "'/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=obsidian.sh --file-forwarding md.obsidian.Obsidian @@u %U @@'" }
+        - { key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom5/name", value: "'Obsidian'" }
 
     - name: Cinnamon settings - clear Nemo cache files (without killing process)
       shell: |

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Exec=sh -c "$HOME/Scripts/Config_backups/ansible/desktop-auto-update-silent.sh"
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=Ansible Updater Prompt
+Comment=Run ansible-pull at session start
+GenericName=Manual Ansible Update Runner
+X-GNOME-Autostart-Delay=30
+Name[en_GB]=ansible-pull-updater-silent.desktop
