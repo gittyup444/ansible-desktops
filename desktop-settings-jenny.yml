@@ -32,8 +32,8 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0644"
-      - src: files/home/config/autostart/ansible-pull-updater-silent.desktop
-        dest: /home/{{ gui_user }}/.config/autostart/ansible-pull-updater-silent.desktop
+      - src: files/home/config/autostart/ansible-pull-updater-silent-jenny.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/ansible-pull-updater-silent-jenny.desktop
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0644"
