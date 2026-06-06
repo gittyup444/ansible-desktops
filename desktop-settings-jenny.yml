@@ -42,7 +42,7 @@
         mode: "0644"
         # menu entry files
         # NOTE: THESE FILES ARE USER-AGNOSTIC BUT REQUIRE SYNCTHING DIRS "Scripts" and "PortableApps" to be present.
-      - src: files/home/local/share/applications/ansible-pull-manual-update.desktop
+      - src: files/home/local/share/applications/ansible-pull-manual-update-jenny.desktop
         dest: /home/{{ gui_user }}/.local/share/applications/ansible-pull-manual-update-jenny.desktop
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
