@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=sh -c "$HOME/Scripts/Config_backups/ansible/desktop-auto-update-silent-jenny.sh"
+Exec=sh -c "$HOME/Scripts/Config_backups/ansible/desktop-auto-update-jenny.sh"
 Hidden=false
 NoDisplay=false
 X-GNOME-Autostart-enabled=true
