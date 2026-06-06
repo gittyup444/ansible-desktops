@@ -13,9 +13,6 @@ Step 3: `sudo ansible-pull -U https://github.com/gittyup444/ansible-desktops.git
   
 Main playbook: `sudo ansible-pull -U https://tinyurl.com/setupttnnb -e "gui_user=jack" desktop-apps.yml`  
   
-### Alternatively, perform initial setup run using shell script (post syncthing setup):  
-Script for initial run: `Scripts/Config_backups/ansible/ansible-desktops/setup.sh`  
-  
 ## To add changes to repo:  
 ```bash
 git add .  
