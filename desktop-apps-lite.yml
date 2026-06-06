@@ -34,9 +34,10 @@
           - htop
           - keepassxc
           - ncdu
-          #- nextcloud-desktop
+          - nextcloud-desktop
           - openssh-server
           - pdfarranger
+          - pdfsam
           - remmina
           - sqlitebrowser
           - syncthing

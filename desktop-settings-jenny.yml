@@ -10,8 +10,9 @@
     cinnamon_pinned_apps:
       - "org.chromium.Chromium.desktop:flatpak"
       - "org.keepassxc.KeePassXC.desktop"
-      - "io.github.dweymouth.supersonic.desktop:flatpak"
-      - "org.x.editor.desktop"
+      - "com.unicornsonlsd.finamp.desktop:flatpak"
+      - "com.github.PintaProject.Pinta.desktop:flatpak"
+      - "libreoffice-draw.desktop"
     
     # Show application names on taskbar buttons
     cinnamon_title_display: 2
