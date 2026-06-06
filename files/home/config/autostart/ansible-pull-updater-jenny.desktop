@@ -8,4 +8,4 @@ Name=Ansible Updater Prompt
 Comment=Run ansible-pull at session start
 GenericName=Manual Ansible Update Runner (Jenny)
 X-GNOME-Autostart-Delay=30
-Name[en_GB]=ansible-pull-updater-silent-jenny.desktop
+Name[en_GB]=ansible-pull-updater-jenny.desktop
