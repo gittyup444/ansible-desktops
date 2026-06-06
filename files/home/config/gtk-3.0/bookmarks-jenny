@@ -1,10 +1,11 @@
 file:///home/jenny/Documents
 file:///home/jenny/Downloads
 file:///home/jenny/Music
-file:///home/jenny/Nextcloud
 file:///home/jenny/Pictures
-file:///home/jenny/Sync
 file:///home/jenny/Videos
+file:///home/jenny/Nextcloud
+file:///home/jenny/Sync
+file:///home/jenny/Sync/Jenny
 sftp://srv-network/home/donkey24/Downloads srv /downloads
 sftp://nas-network/data nas /data
 sftp://nas-network/data2 nas /data2

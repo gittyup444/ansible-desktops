@@ -8,8 +8,10 @@
   vars:
     # Default pinned apps - override in group_vars/host_vars as needed
     cinnamon_pinned_apps:
+      - "google-chrome.desktop"
       - "org.chromium.Chromium.desktop:flatpak"
       - "org.keepassxc.KeePassXC.desktop"
+      - "nemo.desktop"
       - "com.unicornsonlsd.finamp.desktop:flatpak"
       - "com.github.PintaProject.Pinta.desktop:flatpak"
       - "libreoffice-draw.desktop"
@@ -28,13 +30,8 @@
     files_to_copy:
         # autostart files 
         # NOTE: THESE FILES ARE USER-AGNOSTIC BUT REQUIRE SYNCTHING DIR "Scripts" to be present.
-      - src: files/home/config/autostart/configs-backup-script.desktop
-        dest: /home/{{ gui_user }}/.config/autostart/configs-backup-script.desktop
-        owner: "{{ gui_user }}"
-        group: "{{ gui_user }}"
-        mode: "0644"
-      - src: files/home/config/autostart/ansible-pull-updater-silent-jenny.desktop
-        dest: /home/{{ gui_user }}/.config/autostart/ansible-pull-updater-silent-jenny.desktop
+      - src: files/home/config/autostart/ansible-pull-updater-jenny.desktop
+        dest: /home/{{ gui_user }}/.config/autostart/ansible-pull-updater-jenny.desktop
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0644"
@@ -46,17 +43,7 @@
         # menu entry files
         # NOTE: THESE FILES ARE USER-AGNOSTIC BUT REQUIRE SYNCTHING DIRS "Scripts" and "PortableApps" to be present.
       - src: files/home/local/share/applications/ansible-pull-manual-update.desktop
-        dest: /home/{{ gui_user }}/.local/share/applications/ansible-pull-manual-update.desktop
-        owner: "{{ gui_user }}"
-        group: "{{ gui_user }}"
-        mode: "0644"
-      - src: files/home/local/share/applications/config-backup-manual-run.desktop
-        dest: /home/{{ gui_user }}/.local/share/applications/config-backup-manual-run.desktop
-        owner: "{{ gui_user }}"
-        group: "{{ gui_user }}"
-        mode: "0644"
-      - src: files/home/local/share/applications/veracrypt.desktop
-        dest: /home/{{ gui_user }}/.local/share/applications/veracrypt.desktop
+        dest: /home/{{ gui_user }}/.local/share/applications/ansible-pull-manual-update-jenny.desktop
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0644"
@@ -85,8 +72,6 @@
         dest: /home/{{ gui_user }}/.config/puddletag
       - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/local/share/puddletag
         dest: /home/{{ gui_user }}/.local/share/puddletag
-      - src: /home/{{ gui_user }}/Scripts/Config_backups/ansible/configs-master/config/calibre
-        dest: /home/{{ gui_user }}/.config/calibre
 
 
   tasks:
