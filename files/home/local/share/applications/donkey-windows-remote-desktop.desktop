@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Donkey Windows Remote Desktop
+Comment=Launch Remmina RDP connection to Donkey Windows
+Exec=bash -c 'remmina -c "$HOME/Scripts/Config_backups/Remmina/donkey-windows.rdp"'
+Icon=remmina
+Terminal=false
+Categories=Network;RemoteAccess;
+Name[en_GB]=Donkey Windows Remote Desktop

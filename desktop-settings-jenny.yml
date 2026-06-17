@@ -47,6 +47,11 @@
         owner: "{{ gui_user }}"
         group: "{{ gui_user }}"
         mode: "0644"
+      - src: files/home/local/share/applications/donkey-windows-remote-desktop.desktop
+        dest: /home/{{ gui_user }}/.local/share/applications/donkey-windows-remote-desktop.desktop
+        owner: "{{ gui_user }}"
+        group: "{{ gui_user }}"
+        mode: "0644"
         # config files
       - src: files/home/config/bleachbit/bleachbit.ini
         dest: /home/{{ gui_user }}/.config/bleachbit/bleachbit.ini
