@@ -13,4 +13,4 @@ sftp://srv-sftp/home/donkey24/Downloads srv /downloads
 sftp://nas/data nas /data
 sftp://nas/data2 nas /data2
 sftp://cctv/home/donkey24 cctv /home
-sftp://root@100.92.29.58/homeassistant hass
+sftp://hass/homeassistant hass
