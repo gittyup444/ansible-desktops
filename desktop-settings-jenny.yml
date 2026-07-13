@@ -12,6 +12,8 @@
       - "org.chromium.Chromium.desktop:flatpak"
       - "org.keepassxc.KeePassXC.desktop"
       - "nemo.desktop"
+      - "org.signal.Signal.desktop:flatpak"
+      - "donkey-windows-remote-desktop.desktop"
       - "com.unicornsonlsd.finamp.desktop:flatpak"
       - "com.github.PintaProject.Pinta.desktop:flatpak"
       - "libreoffice-draw.desktop"
