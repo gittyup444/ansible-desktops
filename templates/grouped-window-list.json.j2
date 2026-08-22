@@ -108,7 +108,7 @@
         "type": "checkbox",
         "default": true,
         "description": "Group windows by application",
-        "value": false
+        "value": {{ cinnamon_group_apps | default(true) | lower }}
     },
     "scroll-behavior": {
         "type": "combobox",
@@ -197,7 +197,7 @@
             "Window title": 3,
             "Window title (only for the focused window)": 4
         },
-        "value": {{ cinnamon_title_display | default(1) }}
+        "value": {{ cinnamon_title_display | default(3) }}
     },
     "launcher-animation-effect": {
         "type": "combobox",
@@ -361,6 +361,5 @@
             "{{ app }}"{% if not loop.last %},{% endif %}
 {% endfor %}
         ]
-    },
-    "__md5__": "b7d0a7558cf87c22c50195c9d408485f"
+    }
 }

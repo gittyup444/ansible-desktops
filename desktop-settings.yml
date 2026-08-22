@@ -14,8 +14,8 @@
       - "md.obsidian.Obsidian.desktop:flatpak"
       - "com.sublimehq.SublimeText.desktop:flatpak"
 
-    # Show application names on taskbar buttons
-    cinnamon_title_display: 2
+    # Show window titles on taskbar buttons
+    cinnamon_title_display: 3
     # Optional: customize other settings if needed
     # cinnamon_show_thumbnails: true
     # cinnamon_thumbnail_size: 6
