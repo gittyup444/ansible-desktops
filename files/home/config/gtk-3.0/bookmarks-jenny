@@ -7,5 +7,5 @@ file:///home/jenny/Nextcloud
 file:///home/jenny/Sync
 file:///home/jenny/Sync/Jenny
 sftp://srv-network/home/donkey24/Downloads srv /downloads
-sftp://nas-network/data nas /data
+sftp://nas-network/data1 nas /data1
 sftp://nas-network/data2 nas /data2

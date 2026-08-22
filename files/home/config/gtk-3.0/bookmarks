@@ -10,7 +10,7 @@ file:///home/jack/Sync
 file:///home/jack/Videos
 sftp://srv-sftp/home/donkey24 srv /home
 sftp://srv-sftp/home/donkey24/Downloads srv /downloads
-sftp://nas/data nas /data
+sftp://nas/data1 nas /data1
 sftp://nas/data2 nas /data2
 sftp://cctv/home/donkey24 cctv /home
 sftp://hass/homeassistant hass
