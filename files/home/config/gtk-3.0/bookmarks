@@ -8,10 +8,10 @@ file:///home/jack/Projects
 file:///home/jack/Scripts
 file:///home/jack/Sync
 file:///home/jack/Videos
-sftp://srv-lan/home/donkey24 srv /home
-sftp://srv-lan/home/donkey24/docker srv /docker
-sftp://srv-lan/home/donkey24/Downloads srv /downloads
-sftp://nas-lan/data1 nas /data1
-sftp://nas-lan/data2 nas /data2
-sftp://cctv-lan/home/donkey24 cctv /home
-sftp://hass-lan/homeassistant hass
+sftp://srv/home/donkey24 srv /home
+sftp://srv/home/donkey24/docker srv /docker
+sftp://srv/home/donkey24/Downloads srv /downloads
+sftp://nas/data1 nas /data1
+sftp://nas/data2 nas /data2
+sftp://cctv/home/donkey24 cctv /home
+sftp://hass/homeassistant hass
